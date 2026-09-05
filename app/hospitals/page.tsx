@@ -10,7 +10,6 @@ import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
 import {
   LIST_SCROLL_KEY,
-  LIST_TIMEOUT_MS,
   PARTS,
   homeQuery,
   isPartId,
@@ -19,8 +18,10 @@ import {
 } from "@/lib/constants";
 import { formatDistance, haversineMeters } from "@/lib/distance";
 import { hospitalsByRegion, regionLabel, sortHospitals } from "@/lib/hospitals";
-import type { PartId, RegionId, SortMode } from "@/lib/types";
+import { analyticsStatus } from "@/lib/status";
+import type { SortMode } from "@/lib/types";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { useHospitals } from "@/hooks/useHospitals";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 
@@ -39,24 +40,14 @@ function ListInner() {
   const region = isRegionId(rawRegion) ? rawRegion : rawRegion == null || rawRegion === "" ? "all" : null;
   const other = params.get("other");
   const geo = useGeolocation();
+  const hospitals = useHospitals();
   const [sort, setSort] = useState<SortMode>("distance");
   const [guide, setGuide] = useState(false);
-  const [phase, setPhase] = useState<"loading" | "ready" | "error">("loading");
+  const phase = hospitals.status;
 
   const hasGeo = geo.status === "ok";
   const origin = hasGeo ? { lat: geo.lat, lng: geo.lng } : null;
   const homeHref = homeQuery(part, region ?? "all", other);
-
-  useEffect(() => {
-    const ready = window.setTimeout(() => setPhase("ready"), 400);
-    const fail = window.setTimeout(() => {
-      setPhase((current) => (current === "loading" ? "error" : current));
-    }, LIST_TIMEOUT_MS);
-    return () => {
-      window.clearTimeout(ready);
-      window.clearTimeout(fail);
-    };
-  }, [region, part]);
 
   useEffect(() => {
     if (geo.status === "ok") track("location_permission", { result: "granted" }, "S2");
@@ -74,14 +65,14 @@ function ListInner() {
 
   const list = useMemo(() => {
     if (!region) return [];
-    const base = hospitalsByRegion(region);
+    const base = hospitalsByRegion(hospitals.hospitals, region);
     return sortHospitals(base, hasGeo ? sort : "type", origin);
-  }, [region, sort, hasGeo, origin]);
+  }, [region, sort, hasGeo, origin, hospitals.hospitals]);
 
   useEffect(() => {
     if (phase === "ready") {
-      if (list.length === 0) track("no_result", { region, part, result_count: 0 }, "S5");
-      else track("list_view", { region, part, result_count: list.length }, "S2");
+      if (list.length === 0) track("no_result", { region: region ?? "", part, result_count: 0 }, "S5");
+      else track("list_view", { region: region ?? "", part, result_count: list.length }, "S2");
       const y = sessionStorage.getItem(LIST_SCROLL_KEY);
       if (y) {
         const shell = document.querySelector(".app-shell");
@@ -105,8 +96,7 @@ function ListInner() {
           <ErrorState
             onRetry={() => {
               track("list_retry", {}, "S2");
-              setPhase("loading");
-              window.setTimeout(() => setPhase("ready"), 300);
+              void hospitals.reload();
             }}
             onOtherRegion={() => router.push(homeHref)}
           />
@@ -187,7 +177,7 @@ function ListInner() {
                   "hospital_select",
                   {
                     ykiho: hospital.ykiho,
-                    status: hospital.status === "high" ? "possible" : "unknown",
+                    status: analyticsStatus(hospital.status),
                     position: index + 1,
                     distance_m:
                       origin && hospital.lat != null && hospital.lng != null

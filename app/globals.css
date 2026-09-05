@@ -10,6 +10,8 @@
   --primary-soft: #e8eef8;
   --high: #c98912;
   --high-bg: #fff3d4;
+  --confirmed: #2f7d4a;
+  --confirmed-bg: #e4f4ea;
   --unknown: #6b7280;
   --unknown-bg: #eef0f3;
   --danger: #b42318;
@@ -315,6 +317,7 @@ a:focus-visible {
   font-weight: 800;
 }
 .badge.high { background: var(--high-bg); color: var(--high); }
+.badge.confirmed { background: var(--confirmed-bg); color: var(--confirmed); }
 .badge.unknown { background: var(--unknown-bg); color: var(--unknown); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 

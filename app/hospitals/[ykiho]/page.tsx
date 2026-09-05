@@ -1,6 +1,8 @@
 "use client";
 
 import { CallModal } from "@/components/CallModal";
+import { ErrorState } from "@/components/ErrorState";
+import { LoadingState } from "@/components/LoadingState";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
@@ -8,6 +10,8 @@ import { CARE_LEVEL_LABEL, SOURCE_FOOTER } from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
 import { mapsUrl } from "@/lib/maps";
 import { canUseTel, normalizePhone } from "@/lib/phone";
+import { analyticsStatus } from "@/lib/status";
+import { useHospitals } from "@/hooks/useHospitals";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -20,11 +24,13 @@ function DetailInner() {
   const params = useParams<{ ykiho: string }>();
   const search = useSearchParams();
   const ykiho = decodeURIComponent(params.ykiho);
-  const hospital = hospitalById(ykiho);
+  const loaded = useHospitals();
+  const hospital = hospitalById(loaded.hospitals, ykiho);
   const [callOpen, setCallOpen] = useState(false);
   const [guide, setGuide] = useState(false);
 
   useEffect(() => {
+    if (loaded.status !== "ready") return;
     if (!hospital) {
       track("detail_not_found", { ykiho }, "S3");
       return;
@@ -33,13 +39,24 @@ function DetailInner() {
       "hospital_detail_view",
       {
         ykiho,
-        status: hospital.status === "high" ? "possible" : "unknown",
+        status: analyticsStatus(hospital.status),
         has_phone: Boolean(hospital.telno),
         entry: search.get("part") ? "list" : "direct",
       },
       "S3"
     );
-  }, [hospital, ykiho, search]);
+  }, [loaded.status, hospital, ykiho, search]);
+
+  if (loaded.status === "loading") return <LoadingState />;
+  if (loaded.status === "error") {
+    return (
+      <div className="page">
+        <div className="page-body">
+          <ErrorState onRetry={() => void loaded.reload()} onOtherRegion={() => router.push("/")} />
+        </div>
+      </div>
+    );
+  }
 
   if (!hospital) {
     return (
@@ -84,6 +101,18 @@ function DetailInner() {
         <p className="evidence">{hospital.evidence}</p>
 
         <dl className="rows">
+          {hospital.confirmedAt ? (
+            <div className="row">
+              <dt>직접 확인</dt>
+              <dd>
+                {hospital.status === "confirmed"
+                  ? "최근 검사 가능으로 확인됨"
+                  : hospital.reservationStatus || "확인 기록 있음"}
+                {hospital.mriScope ? ` · ${hospital.mriScope}` : null}
+                <div className="source">내부 확인 · {hospital.confirmedAt.slice(0, 10)}</div>
+              </dd>
+            </div>
+          ) : null}
           <div className="row">
             <dt>MRI 장비</dt>
             <dd>
@@ -154,7 +183,7 @@ function DetailInner() {
             className="primary-btn"
             onClick={() => {
               setCallOpen(true);
-              track("call_confirm", { ykiho, status: hospital.status }, "S4");
+              track("call_confirm", { ykiho, status: analyticsStatus(hospital.status) }, "S4");
             }}
           >
             전화하기
@@ -184,7 +213,7 @@ function DetailInner() {
             setCallOpen(false);
             track("call_cancel", { ykiho }, "S4");
           }}
-          onCall={() => track("call_click", { ykiho, status: hospital.status }, "S4")}
+          onCall={() => track("call_click", { ykiho, status: analyticsStatus(hospital.status) }, "S4")}
           onCopy={async () => {
             await navigator.clipboard.writeText(phone);
             track("phone_copy", { ykiho, is_fallback: !canUseTel() }, "S4");

@@ -24,7 +24,7 @@ export type RegionId =
   | "daedeok"
   | "all";
 
-export type HospitalStatus = "high" | "unknown";
+export type HospitalStatus = "confirmed" | "high" | "unknown";
 export type SortMode = "distance" | "type";
 export type Ternary = true | false | "unknown";
 
@@ -47,9 +47,12 @@ export type Hospital = {
   orthoSpecialistCount: number | null;
   hasMriNonpay: Ternary;
   status: HospitalStatus;
-  evidenceId: "F1" | "F2" | "F3" | "F4";
+  evidenceId: "CONFIRMED" | "F1" | "F2" | "F3" | "F4";
   evidence: string;
   sourceDate: string;
+  mriScope: string | null;
+  reservationStatus: string | null;
+  confirmedAt: string | null;
 };
 
 export type Snapshot = {

@@ -8,9 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "snapshot": "node scripts/fetch-snapshot.mjs"
+    "snapshot": "node scripts/fetch-snapshot.mjs",
+    "db:schema": "node scripts/apply-schema.mjs",
+    "db:seed": "node scripts/seed-hospitals.mjs",
+    "db:setup": "node scripts/apply-schema.mjs && node scripts/seed-hospitals.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.115.0",
     "next": "14.2.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

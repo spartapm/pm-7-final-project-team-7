@@ -45,6 +45,7 @@ export const MRI_EQ_CODE = "B301";
 export const ORTHO_DEPT_CODE = "05";
 
 export const EVIDENCE = {
+  CONFIRMED: "최근 확인 결과, 이 병원에서 MRI 검사를 받을 수 있습니다.",
   F1: "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
   F2: "MRI 장비와 MRI 관련 비급여 항목 공개가 확인되어 검사 가능성이 높습니다.",
   F3: "MRI 장비는 확인됐지만 정형외과·비급여 정보가 부족해 전화로 확인이 필요합니다.",
@@ -52,9 +53,12 @@ export const EVIDENCE = {
 } as const;
 
 export const STATUS_LABEL = {
+  confirmed: "최근 검사 가능 확인",
   high: "검사 가능성 높음",
   unknown: "확인 필요",
 } as const;
+
+export const CONFIRMED_WITHIN_DAYS = 30;
 
 export const CARE_LEVEL_LABEL: Record<number, string> = {
   1: "3차",

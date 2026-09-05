@@ -252,6 +252,19 @@ async function main() {
   const out = path.join(dir, "../data/hospitals.json");
   await writeFile(out, JSON.stringify(snapshot, null, 2));
   console.log(`saved ${hospitals.length} MRI hospitals → ${out}`);
+
+  try {
+    const { spawn } = await import("node:child_process");
+    await new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, [path.join(dir, "seed-hospitals.mjs")], {
+        cwd: path.join(dir, ".."),
+        stdio: "inherit",
+      });
+      child.on("exit", (code) => (code === 0 ? resolve(null) : reject(new Error(`seed exit ${code}`))));
+    });
+  } catch (err) {
+    console.warn("supabase seed skipped:", err instanceof Error ? err.message : err);
+  }
 }
 
 main().catch((err) => {
