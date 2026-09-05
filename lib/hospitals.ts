@@ -130,8 +130,15 @@ export function sortHospitals(
   origin: { lat: number; lng: number } | null
 ): Hospital[] {
   const copy = [...list];
-  if (mode === "distance" && origin) {
-    copy.sort((a, b) => {
+  const badgeRank = (h: Hospital) => (h.status === "high" || h.status === "confirmed" ? 0 : 1);
+  const typeRank = (h: Hospital) => {
+    if (h.careLevel === 3) return 0;
+    if (h.careLevel === 2) return 1;
+    if (h.careLevel === 1) return 2;
+    return 3;
+  };
+  copy.sort((a, b) => {
+    if (mode === "distance" && origin) {
       const da =
         a.lat != null && a.lng != null
           ? haversineMeters(origin.lat, origin.lng, a.lat, a.lng)
@@ -140,16 +147,26 @@ export function sortHospitals(
         b.lat != null && b.lng != null
           ? haversineMeters(origin.lat, origin.lng, b.lat, b.lng)
           : Number.POSITIVE_INFINITY;
-      return da - db;
-    });
-    return copy;
-  }
-  copy.sort((a, b) => {
-    const rank = (h: Hospital) => (h.status === "confirmed" ? 0 : h.status === "high" ? 1 : 2);
-    const badge = rank(a) - rank(b);
+      if (da !== db) return da - db;
+      const badge = badgeRank(a) - badgeRank(b);
+      if (badge !== 0) return badge;
+      return a.name.localeCompare(b.name, "ko");
+    }
+    const type = typeRank(a) - typeRank(b);
+    if (type !== 0) return type;
+    const badge = badgeRank(a) - badgeRank(b);
     if (badge !== 0) return badge;
-    const level = (a.careLevel || 9) - (b.careLevel || 9);
-    if (level !== 0) return level;
+    if (origin) {
+      const da =
+        a.lat != null && a.lng != null
+          ? haversineMeters(origin.lat, origin.lng, a.lat, a.lng)
+          : Number.POSITIVE_INFINITY;
+      const db =
+        b.lat != null && b.lng != null
+          ? haversineMeters(origin.lat, origin.lng, b.lat, b.lng)
+          : Number.POSITIVE_INFINITY;
+      if (da !== db) return da - db;
+    }
     return a.name.localeCompare(b.name, "ko");
   });
   return copy;

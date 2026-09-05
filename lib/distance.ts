@@ -16,9 +16,8 @@ export function haversineMeters(
 
 export function formatDistance(meters: number): string {
   if (meters < 1000) {
-    return `직선거리 약 ${Math.round(meters)}m`;
+    const rounded = Math.round(meters / 10) * 10;
+    return `${rounded}m`;
   }
-  const km = meters / 1000;
-  const shown = km >= 10 ? km.toFixed(0) : km.toFixed(1);
-  return `직선거리 약 ${shown}km`;
+  return `${(meters / 1000).toFixed(1)}km`;
 }

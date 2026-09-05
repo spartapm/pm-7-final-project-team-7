@@ -1,0 +1,29 @@
+export function PhoneIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M7.2 3.4h2.1l1.5 3.6-1.9 1.2a13.2 13.2 0 0 0 6.1 6.1l1.2-1.9 3.6 1.5v2.1c0 .8-.6 1.4-1.4 1.4C10.4 17.4 2.6 9.6 2.6 4.8c0-.8.6-1.4 1.4-1.4Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function NavIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M4.2 11.1 19.4 4.6l-6.5 15.2-2.1-6.6-6.6-2.1Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function WarnIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 3.2 21.8 20.2H2.2L12 3.2Zm0 6.3c-.5 0-.8.4-.8.9v3.4c0 .5.3.9.8.9s.8-.4.8-.9V10.4c0-.5-.3-.9-.8-.9Zm0 7.4c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}

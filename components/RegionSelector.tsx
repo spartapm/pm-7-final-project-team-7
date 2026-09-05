@@ -20,8 +20,10 @@ export function RegionSelector({
           aria-pressed={value === region.id}
           onClick={() => onChange(region.id)}
         >
-          <span>{region.label}</span>
-          <span>{value === region.id ? "선택됨" : ""}</span>
+          <span>{region.pickLabel}</span>
+          <span className="region-check" aria-hidden>
+            {value === region.id ? "✓" : ""}
+          </span>
         </button>
       ))}
     </div>

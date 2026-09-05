@@ -5,9 +5,12 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { RegionSelector } from "@/components/RegionSelector";
 import {
   APP_NAME,
-  APP_NAME_EN,
-  PARTS,
+  HOME_SCROLL_KEY,
+  LIST_SCROLL_KEY,
+  LIST_SORT_KEY,
+  REGION_SCOPE_NOTE,
   SOURCE_FOOTER,
+  displayPartLabel,
   isOtherPartId,
   isPartId,
   isRegionId,
@@ -17,98 +20,132 @@ import { track } from "@/lib/analytics";
 import type { OtherPartId, PartId, RegionId } from "@/lib/types";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { REGIONS } from "@/lib/constants";
 
 function HomeInner() {
   const router = useRouter();
   const params = useSearchParams();
   const [part, setPart] = useState<PartId | null>(null);
   const [other, setOther] = useState<OtherPartId | null>(null);
+  const [etcOpen, setEtcOpen] = useState(false);
   const [region, setRegion] = useState<RegionId | null>(null);
-  const [blocked, setBlocked] = useState<"part" | "region" | "both" | null>(null);
+  const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     const nextPart = params.get("part");
     const nextRegion = params.get("region");
     const nextOther = params.get("other");
-    if (isPartId(nextPart)) setPart(nextPart);
+    if (isPartId(nextPart) && nextPart !== "other") setPart(nextPart);
+    if (isPartId(nextPart) && nextPart === "other") {
+      setEtcOpen(true);
+      if (isOtherPartId(nextOther)) {
+        setPart("other");
+        setOther(nextOther);
+      }
+    }
     if (isRegionId(nextRegion)) setRegion(nextRegion);
-    if (isOtherPartId(nextOther)) setOther(nextOther);
     track("service_view", { entry: nextPart || nextRegion ? "back" : "first" }, "S1");
+    if (!(nextPart || nextRegion)) return;
+    const y = sessionStorage.getItem(HOME_SCROLL_KEY);
+    if (y) {
+      const shell = document.querySelector(".app-shell");
+      requestAnimationFrame(() => {
+        if (shell) shell.scrollTop = Number(y);
+        else window.scrollTo(0, Number(y));
+      });
+    }
   }, [params]);
 
-  const question = useMemo(() => {
-    if (!part) return "어느 부위 MRI가 필요하세요?";
-    return PARTS.find((item) => item.id === part)?.question ?? "";
-  }, [part]);
+  const partReady = part && (part !== "other" || other);
+  const ctaLabel = useMemo(() => {
+    if (partReady && region) {
+      const regionText = REGIONS.find((item) => item.id === region)?.label ?? "";
+      return `${regionText} · ${displayPartLabel(part, other)} MRI 병원 찾기`;
+    }
+    return "병원 찾기";
+  }, [part, other, partReady, region]);
 
   function submit() {
-    if (!part && !region) {
-      setBlocked("both");
-      track("search_blocked", { missing: "both" }, "S1");
+    if (!partReady || !region) {
+      setBlocked(true);
+      track("search_blocked", { missing: !partReady && !region ? "both" : !partReady ? "part" : "region" }, "S1");
+      const target = !partReady ? document.getElementById("section-part") : document.getElementById("section-region");
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
-    if (!part) {
-      setBlocked("part");
-      track("search_blocked", { missing: "part" }, "S1");
-      return;
-    }
-    if (!region) {
-      setBlocked("region");
-      track("search_blocked", { missing: "region" }, "S1");
-      return;
-    }
-    setBlocked(null);
-    track("search_submit", { region, part }, "S1");
+    setBlocked(false);
+    const shell = document.querySelector(".app-shell");
+    sessionStorage.setItem(HOME_SCROLL_KEY, String(shell ? shell.scrollTop : window.scrollY));
+    sessionStorage.removeItem(LIST_SORT_KEY);
+    sessionStorage.removeItem(LIST_SCROLL_KEY);
+    track("search_submit", { region, part: partReady }, "S1");
     router.push(`/hospitals?${listQuery(part, region, other)}`);
   }
 
   return (
     <div className="page">
-      <div className="page-body">
+      <div className="brandbar">
         <div className="brand">
           <h1>{APP_NAME}</h1>
-          <span>{APP_NAME_EN} · 대전 MRI</span>
         </div>
-        <p className="lede">{question}</p>
-        <p className="sub">부위와 지역만 고르면, MRI 장비가 확인된 병원을 가까운 순으로 보여 드립니다.</p>
+      </div>
+      <div className="page-body">
+        <div className="hero">
+          <h2>MRI, 어디서 찍을 수 있나요?</h2>
+          <p>MRI 장비가 있는 병원을 찾아드려요.</p>
+        </div>
 
-        <div className="section-label">부위</div>
+        <div className="section-label" id="section-part">
+          어느 부위를 찍으시나요?
+        </div>
         <PartSelector
           value={part}
           otherValue={other}
+          etcOpen={etcOpen}
           onChange={(id) => {
             setPart(id);
+            setEtcOpen(false);
+            setOther(null);
+            setBlocked(false);
             track("part_select", { part: id }, "S1");
-            if (id !== "other") setOther(null);
           }}
-          onOtherChange={(id) => setOther(id)}
-          onEtcOpen={() => track("part_etc_open", {}, "S1")}
+          onOtherChange={(id) => {
+            setPart("other");
+            setOther(id);
+            setBlocked(false);
+            track("part_select", { part: id }, "S1");
+          }}
+          onEtcOpen={() => {
+            setEtcOpen(true);
+            if (part !== "other") {
+              setPart(null);
+              setOther(null);
+            }
+            track("part_etc_open", {}, "S1");
+          }}
         />
 
-        <div className="section-label">지역</div>
+        <div className="section-label" id="section-region">
+          어느 지역에서 찾아볼까요?
+        </div>
         <RegionSelector
           value={region}
           onChange={(id) => {
             setRegion(id);
+            setBlocked(false);
             track("region_select", { region: id }, "S1");
           }}
         />
 
-        {blocked ? (
-          <p className="hint">
-            {blocked === "part"
-              ? "부위를 먼저 선택해 주세요."
-              : blocked === "region"
-                ? "지역을 선택해 주세요."
-                : "부위와 지역을 모두 선택해 주세요."}
-          </p>
-        ) : null}
-
-        <p className="footer-note">{SOURCE_FOOTER}. 실제 검사 가능 여부는 병원에 확인해 주세요.</p>
+        <p className="footer-note">{REGION_SCOPE_NOTE}</p>
+        <p className="footer-note" style={{ marginTop: 8 }}>
+          {SOURCE_FOOTER}
+        </p>
       </div>
 
       <div className="sticky-cta">
-        <PrimaryButton onClick={submit}>병원 찾기</PrimaryButton>
+        <PrimaryButton onClick={submit}>{ctaLabel}</PrimaryButton>
+        {blocked ? <p className="hint">⚠ 지역과 부위를 모두 선택해주세요</p> : null}
       </div>
     </div>
   );

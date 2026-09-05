@@ -1,5 +1,11 @@
 "use client";
 
+import { HospitalsProvider } from "@/hooks/useHospitals";
+
 export function AppShell({ children }: { children: React.ReactNode }) {
-  return <div className="app-shell">{children}</div>;
+  return (
+    <HospitalsProvider>
+      <div className="app-shell">{children}</div>
+    </HospitalsProvider>
+  );
 }

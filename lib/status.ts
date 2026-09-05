@@ -7,26 +7,14 @@ export function judgeStatus(input: {
   hasMriNonpay: Ternary;
 }): Pick<Hospital, "status" | "evidenceId" | "evidence"> {
   if (!input.hasMri) {
-    return {
-      status: "unknown",
-      evidenceId: "F4",
-      evidence: EVIDENCE.F4,
-    };
+    return { status: "unknown", evidenceId: "F4", evidence: EVIDENCE.F4 };
   }
-
-  const high = input.hasOrtho === true || input.hasMriNonpay === true;
-  const status: HospitalStatus = high ? "high" : "unknown";
-
-  if (input.hasOrtho === true) {
-    return { status: "high", evidenceId: "F1", evidence: EVIDENCE.F1 };
-  }
-  if (input.hasMriNonpay === true) {
-    return { status: "high", evidenceId: "F2", evidence: EVIDENCE.F2 };
-  }
-  if (input.hasOrtho === "unknown" || input.hasMriNonpay === "unknown") {
-    return { status, evidenceId: "F4", evidence: EVIDENCE.F4 };
-  }
-  return { status: "unknown", evidenceId: "F3", evidence: EVIDENCE.F3 };
+  const ortho = input.hasOrtho === true;
+  const nonpay = input.hasMriNonpay === true;
+  if (ortho && nonpay) return { status: "high", evidenceId: "F1", evidence: EVIDENCE.F1 };
+  if (ortho) return { status: "high", evidenceId: "F2", evidence: EVIDENCE.F2 };
+  if (nonpay) return { status: "high", evidenceId: "F3", evidence: EVIDENCE.F3 };
+  return { status: "unknown", evidenceId: "F4", evidence: EVIDENCE.F4 };
 }
 
 export function isRecentConfirmation(confirmedAt: string | null, reservationStatus: string | null) {
@@ -36,12 +24,14 @@ export function isRecentConfirmation(confirmedAt: string | null, reservationStat
   return Date.now() - at <= CONFIRMED_WITHIN_DAYS * 24 * 60 * 60 * 1000;
 }
 
-export function applyConfirmation<T extends Pick<Hospital, "status" | "evidenceId" | "evidence" | "confirmedAt" | "reservationStatus">>(
-  hospital: T
-): T {
-  if (!isRecentConfirmation(hospital.confirmedAt, hospital.reservationStatus)) return hospital;
+export function applyConfirmation<
+  T extends Pick<Hospital, "status" | "evidenceId" | "evidence" | "confirmedAt" | "reservationStatus" | "hasMri" | "hasOrtho" | "hasMriNonpay">,
+>(hospital: T): T {
+  const judged = judgeStatus(hospital);
+  const base = { ...hospital, ...judged };
+  if (!isRecentConfirmation(hospital.confirmedAt, hospital.reservationStatus)) return base;
   return {
-    ...hospital,
+    ...base,
     status: "confirmed",
     evidenceId: "CONFIRMED",
     evidence: EVIDENCE.CONFIRMED,
@@ -57,7 +47,7 @@ export function analyticsStatus(status: HospitalStatus) {
 export function careLevelFromClCd(clCd: string | number): 1 | 2 | 3 | 0 {
   const code = String(clCd);
   if (code === "01") return 1;
-  if (code === "11" || code === "21") return 2;
-  if (code === "31") return 3;
+  if (code === "11" || code === "21" || code === "28" || code === "29" || code === "41" || code === "91") return 2;
+  if (code === "31" || code === "51" || code === "92") return 3;
   return 0;
 }

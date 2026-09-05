@@ -6,12 +6,14 @@ import type { OtherPartId, PartId } from "@/lib/types";
 export function PartSelector({
   value,
   otherValue,
+  etcOpen,
   onChange,
   onOtherChange,
   onEtcOpen,
 }: {
   value: PartId | null;
   otherValue: OtherPartId | null;
+  etcOpen: boolean;
   onChange: (id: PartId) => void;
   onOtherChange: (id: OtherPartId) => void;
   onEtcOpen: () => void;
@@ -19,23 +21,27 @@ export function PartSelector({
   return (
     <>
       <div className="chip-grid">
-        {PARTS.map((part) => (
-          <button
-            key={part.id}
-            type="button"
-            className="chip"
-            aria-pressed={value === part.id}
-            onClick={() => {
-              onChange(part.id);
-              if (part.id === "other") onEtcOpen();
-            }}
-          >
-            {part.label}
-          </button>
-        ))}
+        {PARTS.map((part) => {
+          const isEtc = part.id === "other";
+          const pressed = isEtc ? etcOpen : value === part.id;
+          return (
+            <button
+              key={part.id}
+              type="button"
+              className={`chip${isEtc && etcOpen ? " etc-open" : ""}`}
+              aria-pressed={pressed}
+              onClick={() => {
+                if (isEtc) onEtcOpen();
+                else onChange(part.id);
+              }}
+            >
+              {isEtc && etcOpen ? "그 외 ▾" : part.label}
+            </button>
+          );
+        })}
       </div>
-      {value === "other" ? (
-        <div className="chip-list">
+      {etcOpen ? (
+        <div className="subpart-panel">
           {OTHER_PARTS.map((part) => (
             <button
               key={part.id}

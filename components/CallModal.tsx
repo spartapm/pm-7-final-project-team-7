@@ -1,8 +1,10 @@
 "use client";
 
-import { CALL_GUIDE } from "@/lib/constants";
-import { canUseTel, telHref } from "@/lib/phone";
+import { CALL_GUIDES } from "@/lib/constants";
+import { canDial, telHref } from "@/lib/phone";
 import { useState } from "react";
+import { PhoneIcon } from "./Icons";
+import { Toast } from "./Toast";
 
 export function CallModal({
   name,
@@ -17,43 +19,56 @@ export function CallModal({
   onCall: () => void;
   onCopy: () => void | Promise<void>;
 }) {
-  const telOk = canUseTel();
+  const telOk = canDial(phone);
   const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    await onCopy();
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  }
 
   return (
     <div className="modal-backdrop" onClick={onClose} role="presentation">
       <div className="sheet" onClick={(event) => event.stopPropagation()} role="dialog" aria-modal>
-        <h2>전화하기 전에</h2>
         <p className="sheet-name">{name}</p>
-        <p className="num">{phone}</p>
-        <div className="guide">물어볼 말: “{CALL_GUIDE}”</div>
-        {copied ? <p className="copy-ok">전화번호를 복사했어요.</p> : null}
+        <p className="sheet-phone num">{phone}</p>
+        <div className="guide">
+          <span>물어볼 말</span>
+          {CALL_GUIDES[0]}
+          <br />
+          {CALL_GUIDES[1]}
+        </div>
         {telOk ? (
-          <a
-            className="primary-btn"
-            href={telHref(phone)}
-            onClick={onCall}
-            style={{ display: "grid", placeItems: "center", textDecoration: "none" }}
-          >
-            전화하기
-          </a>
+          <div className="modal-actions">
+            <button type="button" className="ghost-btn" onClick={onClose}>
+              취소
+            </button>
+            <a
+              className="primary-btn btn-with-icon"
+              href={telHref(phone)}
+              onClick={onCall}
+            >
+              <PhoneIcon />
+              전화하기
+            </a>
+          </div>
         ) : (
-          <button
-            type="button"
-            className="primary-btn"
-            onClick={async () => {
-              await onCopy();
-              setCopied(true);
-            }}
-          >
-            전화번호 복사하기
+          <button type="button" className="primary-btn" onClick={() => void copy()}>
+            전화번호 복사
           </button>
         )}
-        <div style={{ height: 8 }} />
-        <button type="button" className="ghost-btn" onClick={onClose}>
-          취소
-        </button>
+        {telOk ? (
+          <button type="button" className="copy-link" onClick={() => void copy()}>
+            전화번호 복사하기
+          </button>
+        ) : (
+          <button type="button" className="ghost-btn" style={{ marginTop: 8 }} onClick={onClose}>
+            취소
+          </button>
+        )}
       </div>
+      {copied ? <Toast>번호를 복사했어요</Toast> : null}
     </div>
   );
 }

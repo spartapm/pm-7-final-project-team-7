@@ -6,15 +6,7 @@ export type PartId =
   | "foot"
   | "other";
 
-export type OtherPartId =
-  | "bone"
-  | "wrist"
-  | "liver"
-  | "pelvis"
-  | "joint"
-  | "ligament"
-  | "cartilage"
-  | "muscle";
+export type OtherPartId = "pelvis" | "joint" | "ligament" | "cartilage" | "muscle";
 
 export type RegionId =
   | "donggu"

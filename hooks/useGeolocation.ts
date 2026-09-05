@@ -1,7 +1,7 @@
 "use client";
 
 import { GPS_OPTIONS } from "@/lib/constants";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 type GeoState =
   | { status: "idle" }
@@ -34,10 +34,6 @@ export function useGeolocation() {
       GPS_OPTIONS
     );
   }, []);
-
-  useEffect(() => {
-    request();
-  }, [request]);
 
   return { ...state, request };
 }
