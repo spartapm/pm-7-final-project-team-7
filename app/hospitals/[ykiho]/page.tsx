@@ -8,9 +8,9 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Toast } from "@/components/Toast";
 import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
-import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST } from "@/lib/constants";
+import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST, displayPartLabel, isPartId } from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
-import { mapsUrl } from "@/lib/maps";
+import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
 import { canDial, displayPhone, hasPhoneNumber } from "@/lib/phone";
 import { analyticsStatus } from "@/lib/status";
 import { useHospitals } from "@/hooks/useHospitals";
@@ -98,6 +98,9 @@ function DetailInner() {
   const phone = displayPhone(hospital.telno);
   const showCall = hasPhoneNumber(hospital.telno);
   const canNavigate = Boolean(hospital.addr || (hospital.lat && hospital.lng));
+  const hasMap = hospital.lat != null && hospital.lng != null;
+  const rawPart = search.get("part");
+  const partLabel = displayPartLabel(isPartId(rawPart) ? rawPart : null, search.get("other"));
   const typeText = hospital.clCdNm
     ? `${hospital.clCdNm}${hospital.careLevel ? ` · ${CARE_LEVEL_LABEL[hospital.careLevel]}` : ""}`
     : null;
@@ -189,6 +192,17 @@ function DetailInner() {
             </dd>
           </div>
         </dl>
+        {hasMap ? (
+          <div className="map-card">
+            <iframe
+              className="map-embed"
+              title={`${hospital.name} 위치`}
+              src={mapEmbedUrl(hospital.lat as number, hospital.lng as number)}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        ) : null}
         <p className="limit-note">장비가 있어도 예약 상황에 따라 검사가 어려울 수 있어요. 전화로 확인해 주세요.</p>
       </div>
 
@@ -209,7 +223,16 @@ function DetailInner() {
           <div className="phone-missing">
             등록된 전화번호가 없어요.
             <br />
-            공개 데이터에 번호가 없어 바로 걸 수 없어요. 병원명으로 검색해 확인해 주세요.
+            공개 데이터에 번호가 없어 바로 걸 수 없어요.
+            <a
+              className="search-link"
+              href={hospitalSearchUrl(hospital.name)}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => track("hospital_search", { ykiho }, "S3")}
+            >
+              네이버에서 병원 찾기
+            </a>
           </div>
         )}
         <button type="button" className="ghost-btn btn-with-icon" onClick={openMaps}>
@@ -222,6 +245,7 @@ function DetailInner() {
         <CallModal
           name={hospital.name}
           phone={phone}
+          partLabel={partLabel === "MRI" ? undefined : partLabel}
           onClose={() => {
             setCallOpen(false);
             track("call_cancel", { ykiho }, "S4");

@@ -10,6 +10,15 @@ export function mapsUrl(opts: {
   return `https://map.kakao.com/link/search/${encodeURIComponent(`${opts.name} ${opts.addr}`.trim())}`;
 }
 
+export function mapEmbedUrl(lat: number, lng: number) {
+  const d = 0.006;
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${lng - d},${lat - d},${lng + d},${lat + d}&layer=mapnik&marker=${lat},${lng}`;
+}
+
+export function hospitalSearchUrl(name: string) {
+  return `https://search.naver.com/search.naver?query=${encodeURIComponent(`${name} 대전 MRI`)}`;
+}
+
 export function nmapUrl(opts: {
   name: string;
   lat: number | null;

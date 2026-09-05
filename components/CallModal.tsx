@@ -9,18 +9,21 @@ import { Toast } from "./Toast";
 export function CallModal({
   name,
   phone,
+  partLabel,
   onClose,
   onCall,
   onCopy,
 }: {
   name: string;
   phone: string;
+  partLabel?: string;
   onClose: () => void;
   onCall: () => void;
   onCopy: () => void | Promise<void>;
 }) {
   const telOk = canDial(phone);
   const [copied, setCopied] = useState(false);
+  const firstQuestion = partLabel ? `${partLabel} MRI 검사 받을 수 있나요?` : CALL_GUIDES[0];
 
   async function copy() {
     await onCopy();
@@ -35,7 +38,7 @@ export function CallModal({
         <p className="sheet-phone num">{phone}</p>
         <div className="guide">
           <span>물어볼 말</span>
-          {CALL_GUIDES[0]}
+          {firstQuestion}
           <br />
           {CALL_GUIDES[1]}
         </div>
