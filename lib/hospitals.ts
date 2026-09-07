@@ -1,5 +1,6 @@
 import snapshot from "@/data/hospitals.json";
 import { applyConfirmation } from "./status";
+import { applyDemoHospital } from "./demo";
 import { getSupabase } from "./supabase";
 import { REGIONS } from "./constants";
 import { haversineMeters } from "./distance";
@@ -43,7 +44,7 @@ function ternary(value: boolean | null | undefined): Ternary {
 }
 
 function mapRow(row: HospitalRow): Hospital {
-  return applyConfirmation({
+  const mapped = applyConfirmation({
     ykiho: row.ykiho,
     name: row.name,
     clCd: row.cl_cd,
@@ -69,15 +70,18 @@ function mapRow(row: HospitalRow): Hospital {
     reservationStatus: row.reservation_status,
     confirmedAt: row.confirmed_at,
   });
+  return applyDemoHospital(mapped);
 }
 
 function withLocalFields(hospital: Hospital): Hospital {
-  return applyConfirmation({
-    ...hospital,
-    mriScope: hospital.mriScope ?? null,
-    reservationStatus: hospital.reservationStatus ?? null,
-    confirmedAt: hospital.confirmedAt ?? null,
-  });
+  return applyDemoHospital(
+    applyConfirmation({
+      ...hospital,
+      mriScope: hospital.mriScope ?? null,
+      reservationStatus: hospital.reservationStatus ?? null,
+      confirmedAt: hospital.confirmedAt ?? null,
+    })
+  );
 }
 
 function localData(): Snapshot {

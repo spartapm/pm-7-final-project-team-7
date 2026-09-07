@@ -4,10 +4,11 @@ export function mapsUrl(opts: {
   lat: number | null;
   lng: number | null;
 }): string {
+  const query = encodeURIComponent([opts.name, opts.addr].filter(Boolean).join(" ").trim());
   if (opts.lat != null && opts.lng != null) {
-    return `https://map.kakao.com/link/to/${encodeURIComponent(opts.name)},${opts.lat},${opts.lng}`;
+    return `https://map.naver.com/p/search/${query}?c=${opts.lng},${opts.lat},16,0,0,0,dh`;
   }
-  return `https://map.kakao.com/link/search/${encodeURIComponent(`${opts.name} ${opts.addr}`.trim())}`;
+  return `https://map.naver.com/p/search/${query}`;
 }
 
 export function mapEmbedUrl(lat: number, lng: number) {
@@ -26,5 +27,5 @@ export function nmapUrl(opts: {
 }): string | null {
   if (opts.lat == null || opts.lng == null) return null;
   const dname = encodeURIComponent(opts.name);
-  return `nmap://route/public?dlat=${opts.lat}&dlng=${opts.lng}&dname=${dname}&appname=ieo.vercel.app`;
+  return `nmap://navigation?dlat=${opts.lat}&dlng=${opts.lng}&dname=${dname}&appname=ieo`;
 }

@@ -4,6 +4,7 @@ import { CallModal } from "@/components/CallModal";
 import { ErrorState } from "@/components/ErrorState";
 import { NavIcon, PhoneIcon } from "@/components/Icons";
 import { LoadingState } from "@/components/LoadingState";
+import { NonpaySheet } from "@/components/NonpaySheet";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Toast } from "@/components/Toast";
 import { TypeGuideModal } from "@/components/TypeGuideModal";
@@ -11,6 +12,7 @@ import { track } from "@/lib/analytics";
 import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST, displayPartLabel, isPartId } from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
 import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
+import { nonpayItemsForPart, nonpayTitle } from "@/lib/nonpay";
 import { canDial, displayPhone, hasPhoneNumber } from "@/lib/phone";
 import { analyticsStatus } from "@/lib/status";
 import { useHospitals } from "@/hooks/useHospitals";
@@ -34,6 +36,7 @@ function DetailInner() {
   const hospital = hospitalById(loaded.hospitals, ykiho);
   const [callOpen, setCallOpen] = useState(false);
   const [guide, setGuide] = useState(false);
+  const [nonpayOpen, setNonpayOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
@@ -154,7 +157,20 @@ function DetailInner() {
           <div className="row">
             <dt>MRI 비급여</dt>
             <dd>
-              {hospital.hasMriNonpay === true ? "항목 공개" : <Missing text="정보 확인 필요" />}
+              {hospital.hasMriNonpay === true ? (
+                <button
+                  type="button"
+                  className="nonpay-open"
+                  onClick={() => {
+                    setNonpayOpen(true);
+                    track("nonpay_view", { ykiho, part: rawPart ?? "" }, "S3");
+                  }}
+                >
+                  항목 공개 <span aria-hidden>›</span>
+                </button>
+              ) : (
+                <Missing text="정보 확인 필요" />
+              )}
               <Source label="비급여" />
             </dd>
           </div>
@@ -179,17 +195,11 @@ function DetailInner() {
           </div>
           <div className="row">
             <dt>전화번호</dt>
-            <dd>
-              {phone ? <span className="num">{phone}</span> : <Missing text="정보 없음" />}
-              <Source label="병원정보" />
-            </dd>
+            <dd>{phone ? <span className="num">{phone}</span> : <Missing text="정보 없음" />}</dd>
           </div>
           <div className="row">
             <dt>주소</dt>
-            <dd>
-              {hospital.addr || <Missing text="정보 없음" />}
-              <Source label="병원정보" />
-            </dd>
+            <dd>{hospital.addr || <Missing text="정보 없음" />}</dd>
           </div>
         </dl>
         {hasMap ? (
@@ -258,6 +268,13 @@ function DetailInner() {
         />
       ) : null}
       {guide ? <TypeGuideModal onClose={() => setGuide(false)} /> : null}
+      {nonpayOpen ? (
+        <NonpaySheet
+          title={nonpayTitle(isPartId(rawPart) ? rawPart : null, search.get("other"))}
+          items={nonpayItemsForPart(isPartId(rawPart) ? rawPart : null, search.get("other"))}
+          onClose={() => setNonpayOpen(false)}
+        />
+      ) : null}
       {toast ? <Toast>{toast}</Toast> : null}
     </div>
   );

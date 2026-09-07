@@ -21,6 +21,7 @@ import {
 } from "@/lib/constants";
 import { formatDistance, haversineMeters } from "@/lib/distance";
 import { hospitalsByRegion, regionLabel, sortHospitals } from "@/lib/hospitals";
+import { isDemoError, isDemoLoading, DEMO_LOADING_MS } from "@/lib/demo";
 import { analyticsStatus } from "@/lib/status";
 import type { SortMode } from "@/lib/types";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -57,7 +58,20 @@ function ListInner() {
   const [sort, setSort] = useState<SortMode>(() => readSavedSort() ?? "distance");
   const [guide, setGuide] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const demoLoading = isDemoLoading(part, region);
+  const demoError = isDemoError(part, region);
+  const [demoHold, setDemoHold] = useState(demoLoading);
   const phase = hospitals.status;
+
+  useEffect(() => {
+    if (!demoLoading) {
+      setDemoHold(false);
+      return;
+    }
+    setDemoHold(true);
+    const timer = window.setTimeout(() => setDemoHold(false), DEMO_LOADING_MS);
+    return () => window.clearTimeout(timer);
+  }, [demoLoading]);
 
   const hasGeo = geo.status === "ok";
   const geoFailed = geo.status === "denied" || geo.status === "timeout" || geo.status === "unsupported" || geo.status === "error";
@@ -73,8 +87,8 @@ function ListInner() {
   }, [region, sort, hasGeo, origin, hospitals.hospitals]);
 
   useEffect(() => {
-    if (phase === "ready" && list.length > 0 && geo.status === "idle") geo.request();
-  }, [phase, list.length, geo.status, geo.request]);
+    if (phase === "ready" && list.length > 0 && geo.status === "idle" && !demoHold && !demoError) geo.request();
+  }, [phase, list.length, geo.status, geo.request, demoHold, demoError]);
 
   useEffect(() => {
     if (geo.status === "ok") track("location_permission", { result: "granted" }, "S2");
@@ -132,7 +146,23 @@ function ListInner() {
     </div>
   );
 
-  if (phase === "loading") return <LoadingState onBack={() => router.push(homeHref)} />;
+  if (demoError) {
+    return (
+      <div className="page">
+        <div className="page-body">
+          {topbar}
+          <ErrorState
+            onRetry={() => {
+              track("list_retry", { demo: true }, "S2");
+            }}
+            onOtherRegion={() => router.push(homeHref)}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === "loading" || demoHold) return <LoadingState onBack={() => router.push(homeHref)} />;
   if (phase === "error") {
     return (
       <div className="page">
