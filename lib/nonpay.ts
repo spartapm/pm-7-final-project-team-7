@@ -1,7 +1,7 @@
 import { displayPartLabel } from "./constants";
 import type { OtherPartId, PartId } from "./types";
 
-export type NonpayItem = { name: string; note?: string };
+export type NonpayItem = { name: string; price?: string; note?: string };
 
 const ITEMS: Record<string, NonpayItem[]> = {
   spine: [
