@@ -14,10 +14,12 @@ import {
   LIST_SCROLL_KEY,
   LIST_SORT_KEY,
   displayPartLabel,
+  groupOf,
   homeQuery,
-  isPartId,
   isRegionId,
   listQuery,
+  resolveGroup,
+  resolvePart,
 } from "@/lib/constants";
 import { formatDistance, haversineMeters } from "@/lib/distance";
 import { hospitalsByRegion, regionLabel, sortHospitals } from "@/lib/hospitals";
@@ -50,9 +52,11 @@ function ListInner() {
   const params = useSearchParams();
   const rawPart = params.get("part");
   const rawRegion = params.get("region");
-  const part = isPartId(rawPart) ? rawPart : "spine";
+  const rawGroup = params.get("group");
+  const rawOther = params.get("other");
+  const part = resolvePart(rawPart, rawGroup, rawOther) ?? "lumbar";
+  const group = resolveGroup(rawPart, rawGroup, rawOther) ?? groupOf(part);
   const region = isRegionId(rawRegion) ? rawRegion : rawRegion == null || rawRegion === "" ? "all" : null;
-  const other = params.get("other");
   const geo = useGeolocation();
   const hospitals = useHospitals();
   const [sort, setSort] = useState<SortMode>(() => readSavedSort() ?? "distance");
@@ -76,8 +80,8 @@ function ListInner() {
   const hasGeo = geo.status === "ok";
   const geoFailed = geo.status === "denied" || geo.status === "timeout" || geo.status === "unsupported" || geo.status === "error";
   const origin = hasGeo ? { lat: geo.lat, lng: geo.lng } : null;
-  const homeHref = homeQuery(part, region ?? "all", other);
-  const partLabel = displayPartLabel(part, other);
+  const homeHref = homeQuery(part, region ?? "all", group);
+  const partLabel = displayPartLabel(part);
   const title = `${regionLabel(region ?? "all")} · ${partLabel}`;
 
   const list = useMemo(() => {
@@ -93,7 +97,7 @@ function ListInner() {
   useEffect(() => {
     if (geo.status === "ok") track("location_permission", { result: "granted" }, "S2");
     if (geo.status === "denied") track("location_permission", { result: "denied" }, "S2");
-    if (geo.status === "timeout") track("location_permission", { result: "timeout" }, "S2");
+    if (geo.status === "timeout" || geo.status === "error") track("location_permission", { result: "timeout" }, "S2");
     if (geo.status === "unsupported") track("location_permission", { result: "unsupported" }, "S2");
   }, [geo.status]);
 
@@ -105,7 +109,7 @@ function ListInner() {
 
   useEffect(() => {
     if (phase === "ready") {
-      if (list.length === 0) track("no_result", { region: region ?? "", part, result_count: 0 }, "S5");
+      if (list.length === 0) track("no_result", { region: region ?? "", part }, "S5");
       else track("list_view", { region: region ?? "", part, result_count: list.length }, "S2");
       const y = sessionStorage.getItem(LIST_SCROLL_KEY);
       if (y) {
@@ -119,7 +123,7 @@ function ListInner() {
     if (phase === "error") track("list_error", { reason: "timeout" }, "S2");
   }, [phase, list.length, region, part]);
 
-  const qs = listQuery(part, region ?? "all", other);
+  const qs = listQuery(part, region ?? "all", group);
 
   function changeSort(mode: SortMode) {
     setSort(mode);
@@ -193,7 +197,7 @@ function ListInner() {
             regionName={regionLabel(region ?? "all")}
             onAllDaejeon={() => {
               track("no_result_action", { action: "all_daejeon" }, "S5");
-              router.replace(`/hospitals?${listQuery(part, "all", other)}`);
+              router.replace(`/hospitals?${listQuery(part, "all", group)}`);
             }}
             onOtherRegion={() => {
               track("no_result_action", { action: "other_region" }, "S5");

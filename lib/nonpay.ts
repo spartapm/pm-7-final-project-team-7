@@ -1,14 +1,14 @@
 import { displayPartLabel } from "./constants";
-import type { OtherPartId, PartId } from "./types";
+import type { PartId } from "./types";
 
 export type NonpayItem = { name: string; price?: string; note?: string };
 
-const ITEMS: Record<string, NonpayItem[]> = {
-  spine: [
-    { name: "자기공명영상진단(MRI) 경추" },
-    { name: "자기공명영상진단(MRI) 흉추" },
-    { name: "자기공명영상진단(MRI) 요추" },
-  ],
+const ITEMS: Record<PartId, NonpayItem[]> = {
+  brain: [{ name: "자기공명영상진단(MRI) 뇌" }, { name: "자기공명영상진단(MRI) 뇌조직" }],
+  vessel: [{ name: "자기공명영상진단(MRA) 뇌혈관" }, { name: "자기공명영상진단(MRI) 뇌혈관" }],
+  carotid: [{ name: "자기공명영상진단(MRA) 경동맥" }, { name: "자기공명영상진단(MRI) 경부혈관" }],
+  lumbar: [{ name: "자기공명영상진단(MRI) 요추" }],
+  cervical: [{ name: "자기공명영상진단(MRI) 경추" }],
   shoulder: [
     { name: "자기공명영상진단(MRI) 어깨관절(견관절)" },
     { name: "자기공명영상진단(MRI) 상지" },
@@ -32,15 +32,11 @@ const ITEMS: Record<string, NonpayItem[]> = {
   muscle: [{ name: "자기공명영상진단(MRI) 근육" }, { name: "자기공명영상진단(MRI) 연부조직" }],
 };
 
-export function nonpayItemsForPart(part: PartId | null, other?: string | null): NonpayItem[] {
-  const key = part === "other" && other ? other : part;
-  if (key && ITEMS[key]) return ITEMS[key];
-  return ITEMS.spine;
+export function nonpayItemsForPart(part: PartId | null): NonpayItem[] {
+  if (part && ITEMS[part]) return ITEMS[part];
+  return ITEMS.lumbar;
 }
 
-export function nonpayTitle(part: PartId | null, other?: string | null) {
-  const label = displayPartLabel(part, other);
-  return `${label} MRI 비급여 항목`;
+export function nonpayTitle(part: PartId | null) {
+  return `${displayPartLabel(part)} MRI 비급여 항목`;
 }
-
-export type { OtherPartId };

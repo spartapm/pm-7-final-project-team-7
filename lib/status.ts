@@ -39,9 +39,7 @@ export function applyConfirmation<
 }
 
 export function analyticsStatus(status: HospitalStatus) {
-  if (status === "confirmed") return "confirmed";
-  if (status === "high") return "possible";
-  return "unknown";
+  return status === "unknown" ? "unknown" : "possible";
 }
 
 export function careLevelFromClCd(clCd: string | number): 1 | 2 | 3 | 0 {

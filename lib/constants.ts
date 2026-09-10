@@ -1,4 +1,4 @@
-import type { OtherPartId, PartId, RegionId } from "./types";
+import type { PartGroupId, PartId, RegionId } from "./types";
 
 export const APP_NAME = "이어";
 export const APP_NAME_EN = "IEO";
@@ -23,22 +23,51 @@ export const REGIONS: {
   { id: "all", label: "대전 전체", pickLabel: "대전 전체에서 찾기", sgguCd: null, center: { lat: 36.350, lng: 127.385 } },
 ];
 
-export const PARTS: { id: PartId; label: string }[] = [
-  { id: "spine", label: "척추" },
-  { id: "shoulder", label: "어깨" },
-  { id: "knee", label: "무릎" },
-  { id: "hand", label: "손" },
-  { id: "foot", label: "발" },
-  { id: "other", label: "그 외" },
+export const PART_GROUPS: {
+  id: PartGroupId;
+  label: string;
+  parts: { id: PartId; label: string }[];
+}[] = [
+  {
+    id: "brain",
+    label: "뇌",
+    parts: [
+      { id: "brain", label: "뇌" },
+      { id: "vessel", label: "뇌혈관" },
+      { id: "carotid", label: "경동맥" },
+    ],
+  },
+  {
+    id: "spine",
+    label: "척추",
+    parts: [
+      { id: "lumbar", label: "요추" },
+      { id: "cervical", label: "경추" },
+    ],
+  },
+  {
+    id: "msk",
+    label: "뼈/관절/근육",
+    parts: [
+      { id: "shoulder", label: "어깨" },
+      { id: "knee", label: "무릎" },
+      { id: "hand", label: "손" },
+      { id: "foot", label: "발" },
+      { id: "pelvis", label: "골반" },
+      { id: "joint", label: "관절" },
+      { id: "ligament", label: "인대" },
+      { id: "cartilage", label: "연골" },
+      { id: "muscle", label: "근육" },
+    ],
+  },
 ];
 
-export const OTHER_PARTS: { id: OtherPartId; label: string }[] = [
-  { id: "pelvis", label: "골반" },
-  { id: "joint", label: "관절" },
-  { id: "ligament", label: "인대" },
-  { id: "cartilage", label: "연골" },
-  { id: "muscle", label: "근육" },
-];
+export const PARTS = PART_GROUPS.flatMap((group) => group.parts);
+export const PICK_REGIONS = REGIONS.filter((region) => region.id !== "all");
+
+const GROUP_BY_PART: Record<PartId, PartGroupId> = Object.fromEntries(
+  PART_GROUPS.flatMap((group) => group.parts.map((part) => [part.id, group.id]))
+) as Record<PartId, PartGroupId>;
 
 export const MRI_EQ_CODE = "B301";
 export const ORTHO_DEPT_CODE = "05";
@@ -104,27 +133,51 @@ export function isPartId(value: string | null): value is PartId {
   return PARTS.some((part) => part.id === value);
 }
 
-export function isOtherPartId(value: string | null): value is OtherPartId {
-  return OTHER_PARTS.some((part) => part.id === value);
+export function isPartGroupId(value: string | null): value is PartGroupId {
+  return PART_GROUPS.some((group) => group.id === value);
 }
 
 export function isRegionId(value: string | null): value is RegionId {
   return REGIONS.some((region) => region.id === value);
 }
 
-export function displayPartLabel(part: PartId | null, other?: string | null) {
-  if (part === "other") {
-    return OTHER_PARTS.find((item) => item.id === other)?.label ?? "그 외";
-  }
+export function groupOf(part: PartId): PartGroupId {
+  return GROUP_BY_PART[part];
+}
+
+export function displayPartLabel(part: PartId | null) {
   return PARTS.find((item) => item.id === part)?.label ?? "MRI";
 }
 
-export function homeQuery(part: PartId, region: RegionId, other?: string | null): string {
-  const extra = part === "other" && other ? `&other=${other}` : "";
-  return `/?part=${part}&region=${region}${extra}`;
+const LEGACY_PART: Record<string, PartId> = {
+  spine: "lumbar",
+  other: "pelvis",
+};
+
+export function resolvePart(
+  rawPart: string | null,
+  _rawGroup?: string | null,
+  rawOther?: string | null
+): PartId | null {
+  if (isPartId(rawPart)) return rawPart;
+  if (rawPart === "other" && isPartId(rawOther ?? null)) return rawOther as PartId;
+  if (rawPart && LEGACY_PART[rawPart]) return LEGACY_PART[rawPart];
+  return null;
 }
 
-export function listQuery(part: PartId, region: RegionId, other?: string | null): string {
-  const extra = part === "other" && other ? `&other=${other}` : "";
-  return `part=${part}&region=${region}${extra}`;
+export function resolveGroup(rawPart: string | null, rawGroup?: string | null, rawOther?: string | null): PartGroupId | null {
+  if (isPartGroupId(rawGroup ?? null)) return rawGroup as PartGroupId;
+  const part = resolvePart(rawPart, rawGroup, rawOther);
+  if (part) return groupOf(part);
+  if (rawPart === "spine" || rawPart === "brain" || rawPart === "msk") return rawPart;
+  if (rawPart === "other") return "msk";
+  return null;
+}
+
+export function homeQuery(part: PartId, region: RegionId, group?: PartGroupId | null): string {
+  return `/?group=${group ?? groupOf(part)}&part=${part}&region=${region}`;
+}
+
+export function listQuery(part: PartId, region: RegionId, group?: PartGroupId | null): string {
+  return `part=${part}&group=${group ?? groupOf(part)}&region=${region}`;
 }

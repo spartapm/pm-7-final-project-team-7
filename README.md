@@ -21,7 +21,6 @@ npm run dev
 | `NEXT_PUBLIC_SUPABASE_URL` | 앱 실행 | Supabase Project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 앱 실행 | Publishable key |
 | `DATABASE_URL` | 스키마 적용 때만 | `postgresql://postgres:[DB-PASSWORD]@db.xxxx.supabase.co:5432/postgres` |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | 선택 | GA4 측정 ID (`G-...`). 없어도 `app_events`에는 기록 |
 | `HIRA_KEY_A` | 스냅샷 갱신할 때만 | 병원정보·의료기관 상세 API 키 |
 | `HIRA_KEY_B` | 스냅샷 갱신할 때만 | 비급여·코드조회 API 키 |
 

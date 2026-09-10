@@ -1,56 +1,50 @@
 "use client";
 
-import { OTHER_PARTS, PARTS } from "@/lib/constants";
-import type { OtherPartId, PartId } from "@/lib/types";
+import { PART_GROUPS } from "@/lib/constants";
+import type { PartGroupId, PartId } from "@/lib/types";
 
 export function PartSelector({
-  value,
-  otherValue,
-  etcOpen,
-  onChange,
-  onOtherChange,
-  onEtcOpen,
+  group,
+  part,
+  onGroupChange,
+  onPartChange,
 }: {
-  value: PartId | null;
-  otherValue: OtherPartId | null;
-  etcOpen: boolean;
-  onChange: (id: PartId) => void;
-  onOtherChange: (id: OtherPartId) => void;
-  onEtcOpen: () => void;
+  group: PartGroupId | null;
+  part: PartId | null;
+  onGroupChange: (id: PartGroupId) => void;
+  onPartChange: (id: PartId) => void;
 }) {
+  const open = PART_GROUPS.find((item) => item.id === group);
+
   return (
     <>
       <div className="chip-grid">
-        {PARTS.map((part) => {
-          const isEtc = part.id === "other";
-          const pressed = isEtc ? etcOpen : value === part.id;
+        {PART_GROUPS.map((item) => {
+          const selected = group === item.id;
           return (
             <button
-              key={part.id}
+              key={item.id}
               type="button"
-              className={`chip${isEtc && etcOpen ? " etc-open" : ""}`}
-              aria-pressed={pressed}
-              onClick={() => {
-                if (isEtc) onEtcOpen();
-                else onChange(part.id);
-              }}
+              className={`chip${selected && !part ? " group-open" : ""}`}
+              aria-pressed={selected}
+              onClick={() => onGroupChange(item.id)}
             >
-              {isEtc && etcOpen ? "그 외 ▾" : part.label}
+              {item.label}
             </button>
           );
         })}
       </div>
-      {etcOpen ? (
-        <div className="subpart-panel">
-          {OTHER_PARTS.map((part) => (
+      {open ? (
+        <div className={`subpart-panel sub-${open.id}`}>
+          {open.parts.map((item) => (
             <button
-              key={part.id}
+              key={item.id}
               type="button"
               className="chip small"
-              aria-pressed={otherValue === part.id}
-              onClick={() => onOtherChange(part.id)}
+              aria-pressed={part === item.id}
+              onClick={() => onPartChange(item.id)}
             >
-              {part.label}
+              {item.label}
             </button>
           ))}
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { REGIONS } from "@/lib/constants";
+import { PICK_REGIONS } from "@/lib/constants";
 import type { RegionId } from "@/lib/types";
 
 export function RegionSelector({
@@ -12,7 +12,7 @@ export function RegionSelector({
 }) {
   return (
     <div className="region-list">
-      {REGIONS.map((region) => (
+      {PICK_REGIONS.map((region) => (
         <button
           key={region.id}
           type="button"

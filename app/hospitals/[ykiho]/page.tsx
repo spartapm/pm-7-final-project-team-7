@@ -9,7 +9,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Toast } from "@/components/Toast";
 import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
-import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST, displayPartLabel, isPartId } from "@/lib/constants";
+import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST, displayPartLabel, resolvePart } from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
 import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
 import { nonpayItemsForPart, nonpayTitle } from "@/lib/nonpay";
@@ -50,7 +50,7 @@ function DetailInner() {
       {
         ykiho,
         status: analyticsStatus(hospital.status),
-        has_phone: Boolean(hospital.telno),
+        has_phone: hasPhoneNumber(hospital.telno),
         entry: search.get("part") ? "list" : "direct",
       },
       "S3"
@@ -102,8 +102,8 @@ function DetailInner() {
   const showCall = hasPhoneNumber(hospital.telno);
   const canNavigate = Boolean(hospital.addr || (hospital.lat && hospital.lng));
   const hasMap = hospital.lat != null && hospital.lng != null;
-  const rawPart = search.get("part");
-  const partLabel = displayPartLabel(isPartId(rawPart) ? rawPart : null, search.get("other"));
+  const selectedPart = resolvePart(search.get("part"), search.get("group"), search.get("other"));
+  const partLabel = displayPartLabel(selectedPart);
   const typeText = hospital.clCdNm
     ? `${hospital.clCdNm}${hospital.careLevel ? ` · ${CARE_LEVEL_LABEL[hospital.careLevel]}` : ""}`
     : null;
@@ -163,7 +163,7 @@ function DetailInner() {
                   className="nonpay-open"
                   onClick={() => {
                     setNonpayOpen(true);
-                    track("nonpay_view", { ykiho, part: rawPart ?? "" }, "S3");
+                    track("nonpay_view", { ykiho, part: selectedPart ?? "" }, "S3");
                   }}
                 >
                   항목 공개 <span aria-hidden>›</span>
@@ -270,8 +270,8 @@ function DetailInner() {
       {guide ? <TypeGuideModal onClose={() => setGuide(false)} /> : null}
       {nonpayOpen ? (
         <NonpaySheet
-          title={nonpayTitle(isPartId(rawPart) ? rawPart : null, search.get("other"))}
-          items={nonpayItemsForPart(isPartId(rawPart) ? rawPart : null, search.get("other"))}
+          title={nonpayTitle(selectedPart)}
+          items={nonpayItemsForPart(selectedPart)}
           onClose={() => setNonpayOpen(false)}
         />
       ) : null}

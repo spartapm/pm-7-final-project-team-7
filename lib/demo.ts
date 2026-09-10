@@ -1,8 +1,9 @@
 import { applyConfirmation } from "./status";
+import { groupOf } from "./constants";
 import type { Hospital, PartId, Ternary } from "./types";
 
-/** 중구 QA 경로: 척추=로딩, 어깨=오류 */
-export const DEMO_LOADING_PART: PartId = "spine";
+/** 중구 QA 경로: 척추(요추·경추)=로딩, 어깨=오류 */
+export const DEMO_LOADING_GROUP = "spine" as const;
 export const DEMO_ERROR_PART: PartId = "shoulder";
 export const DEMO_QA_REGION = "junggu";
 export const DEMO_LOADING_MS = 2200;
@@ -26,7 +27,7 @@ const OVERRIDES: Record<string, Partial<Hospital>> = {
 };
 
 export function isDemoLoading(part: PartId, region: string | null) {
-  return part === DEMO_LOADING_PART && region === DEMO_QA_REGION;
+  return groupOf(part) === DEMO_LOADING_GROUP && region === DEMO_QA_REGION;
 }
 
 export function isDemoError(part: PartId, region: string | null) {

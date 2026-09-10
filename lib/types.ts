@@ -1,12 +1,20 @@
+export type PartGroupId = "brain" | "spine" | "msk";
+
 export type PartId =
-  | "spine"
+  | "brain"
+  | "vessel"
+  | "carotid"
+  | "lumbar"
+  | "cervical"
   | "shoulder"
   | "knee"
   | "hand"
   | "foot"
-  | "other";
-
-export type OtherPartId = "pelvis" | "joint" | "ligament" | "cartilage" | "muscle";
+  | "pelvis"
+  | "joint"
+  | "ligament"
+  | "cartilage"
+  | "muscle";
 
 export type RegionId =
   | "donggu"

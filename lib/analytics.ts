@@ -3,6 +3,13 @@ import { getSupabase } from "./supabase";
 
 type Props = Record<string, string | number | boolean | undefined>;
 
+declare global {
+  interface Window {
+    dataLayer?: Record<string, unknown>[];
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 function device(): "mobile" | "desktop" {
   if (typeof navigator === "undefined") return "desktop";
   return /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "mobile" : "desktop";
@@ -34,15 +41,20 @@ export function track(event: string, props: Props = {}, screen = "") {
     device: device(),
     os: os(),
   };
-  const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
-  if (gtag) {
-    gtag("event", event, payload);
+  const cleaned = Object.fromEntries(
+    Object.entries(payload).filter(([, value]) => value !== undefined)
+  ) as Record<string, string | number | boolean>;
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event, ...cleaned });
+
+  if (typeof window.gtag === "function") {
+    window.gtag("event", event, cleaned);
   }
 
   const sb = getSupabase();
   if (!sb) return;
-  const { screen: screenName, app_version, device: deviceName, os: osName, ...rest } = payload;
-  const cleaned = Object.fromEntries(Object.entries(rest).filter(([, value]) => value !== undefined));
+  const { screen: screenName, app_version, device: deviceName, os: osName, ...rest } = cleaned;
   void (async () => {
     const { error } = await sb.from("app_events").insert({
       session_id: sessionId(),
@@ -51,7 +63,7 @@ export function track(event: string, props: Props = {}, screen = "") {
       device: deviceName,
       os: osName,
       app_version,
-      props: cleaned,
+      props: rest,
     });
     if (error) console.warn("[ieo] event", error.message);
   })();

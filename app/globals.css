@@ -170,14 +170,15 @@ a:focus-visible {
   gap: 8px;
 }
 .chip {
-  min-height: 44px;
+  min-height: 48px;
   border: 1px solid var(--line);
   background: #fff;
   border-radius: 13px;
   font-size: 13px;
   font-weight: 700;
   color: var(--ink-2);
-  padding: 0;
+  padding: 8px 4px;
+  line-height: 1.25;
 }
 .chip[aria-pressed="true"] {
   background: var(--primary);
@@ -185,7 +186,9 @@ a:focus-visible {
   color: white;
 }
 .chip.etc-open,
-.chip.etc-open[aria-pressed="true"] {
+.chip.etc-open[aria-pressed="true"],
+.chip.group-open,
+.chip.group-open[aria-pressed="true"] {
   background: var(--primary-soft);
   border-color: var(--accent);
   color: var(--accent);
@@ -197,10 +200,11 @@ a:focus-visible {
   border-radius: 13px;
   padding: 10px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   animation: open 150ms ease;
 }
+.subpart-panel.sub-spine { grid-template-columns: repeat(2, 1fr); }
 @keyframes open {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: none; }
