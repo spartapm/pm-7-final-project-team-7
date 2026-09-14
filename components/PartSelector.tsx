@@ -25,7 +25,7 @@ export function PartSelector({
             <button
               key={item.id}
               type="button"
-              className={`chip${selected && !part ? " group-open" : ""}`}
+              className="chip"
               aria-pressed={selected}
               onClick={() => onGroupChange(item.id)}
             >
@@ -36,17 +36,23 @@ export function PartSelector({
       </div>
       {open ? (
         <div className={`subpart-panel sub-${open.id}`}>
-          {open.parts.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className="chip small"
-              aria-pressed={part === item.id}
-              onClick={() => onPartChange(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
+          <div className="subpart-head">
+            <strong>{open.label} 세부 부위 선택</strong>
+            <span>세부 부위를 선택해주세요</span>
+          </div>
+          <div className="subpart-chips">
+            {open.parts.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className="chip small"
+                aria-pressed={part === item.id}
+                onClick={() => onPartChange(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       ) : null}
     </>

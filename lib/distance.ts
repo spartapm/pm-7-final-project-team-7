@@ -17,7 +17,7 @@ export function haversineMeters(
 export function formatDistance(meters: number): string {
   if (meters < 1000) {
     const rounded = Math.round(meters / 10) * 10;
-    return `${rounded}m`;
+    return `${rounded} m`;
   }
-  return `${(meters / 1000).toFixed(1)}km`;
+  return `${(meters / 1000).toFixed(1)} km`;
 }

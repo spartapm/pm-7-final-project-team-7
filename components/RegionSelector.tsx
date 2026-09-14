@@ -11,19 +11,16 @@ export function RegionSelector({
   onChange: (id: RegionId) => void;
 }) {
   return (
-    <div className="region-list">
+    <div className="region-grid">
       {PICK_REGIONS.map((region) => (
         <button
           key={region.id}
           type="button"
-          className="region-row"
+          className="region-chip"
           aria-pressed={value === region.id}
           onClick={() => onChange(region.id)}
         >
-          <span>{region.pickLabel}</span>
-          <span className="region-check" aria-hidden>
-            {value === region.id ? "✓" : ""}
-          </span>
+          {region.pickLabel}
         </button>
       ))}
     </div>

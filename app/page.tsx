@@ -1,15 +1,16 @@
 "use client";
 
+import { BrandHeader } from "@/components/BrandHeader";
 import { PartSelector } from "@/components/PartSelector";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { RegionSelector } from "@/components/RegionSelector";
+import { TabBar } from "@/components/TabBar";
 import {
-  APP_NAME,
   HOME_SCROLL_KEY,
   LIST_SCROLL_KEY,
   LIST_SORT_KEY,
   REGION_SCOPE_NOTE,
-  SOURCE_FOOTER,
+  REGION_SCOPE_SUB,
   displayPartLabel,
   groupOf,
   isRegionId,
@@ -54,9 +55,9 @@ function HomeInner() {
   const ctaLabel = useMemo(() => {
     if (partReady && region && part) {
       const regionText = REGIONS.find((item) => item.id === region)?.label ?? "";
-      return `${regionText} · ${displayPartLabel(part)} MRI 병원 찾기`;
+      return `대전 ${regionText} · ${displayPartLabel(part)} MRI 병원 보기`;
     }
-    return "병원 찾기";
+    return "병원 보기";
   }, [part, partReady, region]);
 
   function submit() {
@@ -77,20 +78,26 @@ function HomeInner() {
   }
 
   return (
-    <div className="page">
-      <div className="brandbar">
-        <div className="brand">
-          <h1>{APP_NAME}</h1>
-        </div>
-      </div>
+    <div className="page page-home">
+      <BrandHeader variant="home" />
       <div className="page-body">
         <div className="hero">
-          <h2>MRI, 어디서 찍을 수 있나요?</h2>
-          <p>MRI 장비가 있는 병원을 찾아드려요.</p>
+          <span className="hero-kicker">대전 특화 안내</span>
+          <h2>
+            MRI, 어디서 찍을 수
+            <br />
+            있나요?
+          </h2>
+          <p>우리 동네 MRI 보유 병원과 촬영 장비 정보를 투명하게 비교해보세요.</p>
+          <div className="hero-meta">
+            <span>건강보험심사평가원 최신 공공데이터</span>
+            <span className="hero-chip">100 % 공공 기반</span>
+          </div>
         </div>
 
-        <div className="section-label" id="section-part">
-          어느 부위를 찍으시나요?
+        <div className="section-head" id="section-part">
+          <div className="section-label">어느 부위를 찍으시나요?</div>
+          <span className="section-hint">대분류 & 세부 부위</span>
         </div>
         <PartSelector
           group={group}
@@ -109,8 +116,9 @@ function HomeInner() {
           }}
         />
 
-        <div className="section-label" id="section-region">
-          어느 지역에서 찾아볼까요?
+        <div className="section-head" id="section-region">
+          <div className="section-label">어느 지역에서 찾아볼까요?</div>
+          <span className="section-hint">5개 구 지원</span>
         </div>
         <RegionSelector
           value={region}
@@ -121,16 +129,17 @@ function HomeInner() {
           }}
         />
 
-        <p className="footer-note">{REGION_SCOPE_NOTE}</p>
-        <p className="footer-note" style={{ marginTop: 8 }}>
-          {SOURCE_FOOTER}
-        </p>
-      </div>
+        <div className="scope-box">
+          <p>{REGION_SCOPE_NOTE}</p>
+          <p className="scope-sub">{REGION_SCOPE_SUB}</p>
+        </div>
 
-      <div className="sticky-cta">
-        <PrimaryButton onClick={submit}>{ctaLabel}</PrimaryButton>
-        {blocked ? <p className="hint">⚠ 지역과 부위를 모두 선택해주세요</p> : null}
+        <div className="home-cta">
+          <PrimaryButton onClick={submit}>{ctaLabel}</PrimaryButton>
+          {blocked ? <p className="hint">지역과 부위를 모두 선택해주세요</p> : null}
+        </div>
       </div>
+      <TabBar active="home" />
     </div>
   );
 }

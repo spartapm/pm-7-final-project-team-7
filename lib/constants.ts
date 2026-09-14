@@ -4,7 +4,14 @@ export const APP_NAME = "이어";
 export const APP_NAME_EN = "IEO";
 export const APP_VERSION = "1.0.0";
 export const SOURCE_FOOTER = "국가 공개 정보(건강보험심사평가원) 기반";
-export const REGION_SCOPE_NOTE = "지금은 대전광역시에서만 찾을 수 있어요. 다른 지역은 순차적으로 열릴 예정이에요.";
+export const REGION_SCOPE_NOTE = "지금은 대전광역시 자치구(동구·중구·서구·유성구·대덕구)에서 찾을 수 있어요.";
+export const REGION_SCOPE_SUB = "다른 지역은 순차적으로 열릴 예정이에요. · 국가 공개 정보(건강보험심사평가원) 기반";
+export const LIST_GUIDE =
+  "MRI 장비 보유 대수 및 당일 검사 일정은 응급 및 원내 상황에 따라 변동될 수 있습니다. 각 병원의 대표 전화번호로 문의 시 보다 정확한 검사 일정을 확인하실 수 있습니다.";
+export const PORTAL_NOTICE =
+  "국가 공개 포털 안내 사항: 본 의료장비 현황 및 진료 항목 정보는 보건복지부 및 건강보험심사평가원의 공공의료 빅데이터 개방시스템에 공식 등록된 기준입니다. 임상적 응급상황 또는 특수 조영술 여부에 따라 의료진의 직접 사전 면담 및 전화 상담이 필수로 수반됩니다.";
+export const NONPAY_SHEET_NOTE =
+  "병원에 따라 비급여 항목 및 금액이 달라질 수 있어요. 정확한 검사 내용과 비용은 병원에 직접 문의해 주세요.";
 
 export const SIDO_DAEJEON = "250000";
 
@@ -47,7 +54,7 @@ export const PART_GROUPS: {
   },
   {
     id: "msk",
-    label: "뼈/관절/근육",
+    label: "뼈·관절·근육",
     parts: [
       { id: "shoulder", label: "어깨" },
       { id: "knee", label: "무릎" },
@@ -81,7 +88,7 @@ export const EVIDENCE = {
 } as const;
 
 export const STATUS_LABEL = {
-  confirmed: "최근 검사 가능 확인",
+  confirmed: "검사 가능",
   high: "검사 가능성 높음",
   unknown: "확인 필요",
 } as const;

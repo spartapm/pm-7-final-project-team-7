@@ -40,3 +40,10 @@ export function nonpayItemsForPart(part: PartId | null): NonpayItem[] {
 export function nonpayTitle(part: PartId | null) {
   return `${displayPartLabel(part)} MRI 비급여 항목`;
 }
+
+export function examItemsForPart(part: PartId | null, disclosed: boolean) {
+  return nonpayItemsForPart(part).map((item) => ({
+    name: item.name,
+    available: disclosed,
+  }));
+}

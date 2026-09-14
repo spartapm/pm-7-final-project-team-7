@@ -1,5 +1,6 @@
 "use client";
 
+import { NONPAY_SHEET_NOTE } from "@/lib/constants";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -67,6 +68,7 @@ export function NonpaySheet({
             </li>
           ))}
         </ul>
+        <p className="nonpay-sheet-note">{NONPAY_SHEET_NOTE}</p>
       </div>
     </div>,
     target

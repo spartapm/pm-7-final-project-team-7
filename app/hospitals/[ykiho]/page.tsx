@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandHeader } from "@/components/BrandHeader";
 import { CallModal } from "@/components/CallModal";
 import { ErrorState } from "@/components/ErrorState";
 import { NavIcon, PhoneIcon } from "@/components/Icons";
@@ -9,10 +10,10 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Toast } from "@/components/Toast";
 import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
-import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST, displayPartLabel, resolvePart } from "@/lib/constants";
+import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST, PORTAL_NOTICE, displayPartLabel, resolvePart } from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
 import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
-import { nonpayItemsForPart, nonpayTitle } from "@/lib/nonpay";
+import { examItemsForPart, nonpayItemsForPart, nonpayTitle } from "@/lib/nonpay";
 import { canDial, displayPhone, hasPhoneNumber } from "@/lib/phone";
 import { analyticsStatus } from "@/lib/status";
 import { useHospitals } from "@/hooks/useHospitals";
@@ -25,6 +26,11 @@ function Missing({ text }: { text: string }) {
 
 function Source({ label }: { label: string }) {
   return <span className="source-tag">{label}</span>;
+}
+
+function neighborhoodFromAddr(addr: string) {
+  const match = addr.match(/\(([^)]+동)\)/);
+  return match?.[1] ?? null;
 }
 
 function DetailInner() {
@@ -113,6 +119,17 @@ function DetailInner() {
     lat: hospital.lat,
     lng: hospital.lng,
   };
+  const addr = hospital.addr;
+  const dong = neighborhoodFromAddr(addr);
+  const examItems = examItemsForPart(selectedPart, hospital.hasMriNonpay === true);
+  const disclosed = hospital.hasMriNonpay === true;
+
+  async function copyAddress() {
+    if (!addr) return;
+    await navigator.clipboard.writeText(addr);
+    setToast("주소를 복사했어요");
+    window.setTimeout(() => setToast(null), 2000);
+  }
 
   function openMaps() {
     if (!canNavigate) {
@@ -126,38 +143,49 @@ function DetailInner() {
 
   return (
     <div className="page">
+      <BrandHeader variant="detail" onBack={goBack} />
       <div className="page-body">
-        <div className="topbar">
-          <button type="button" className="icon-btn" onClick={goBack} aria-label="뒤로">
-            ←
-          </button>
-          <div className="topbar-title">병원 상세</div>
+        <div className="verify-row">
+          {hospital.careLevel === 1 ? (
+            <span className="verify-chip navy">상급종합병원</span>
+          ) : hospital.clCdNm ? (
+            <span className="verify-chip navy">{hospital.clCdNm}</span>
+          ) : null}
+          <span className="verify-chip gray">심평원 공공데이터 검증</span>
         </div>
-        <div className="detail-head">
-          <h1 className="detail-name">{hospital.name}</h1>
-          <StatusBadge status={hospital.status} />
+
+        <div className="detail-hero">
+          <div className="detail-head">
+            <h1 className="detail-name">{hospital.name}</h1>
+            <StatusBadge status={hospital.status} />
+          </div>
+          <p className="evidence">{hospital.evidence}</p>
         </div>
-        <p className="evidence">{hospital.evidence}</p>
 
         <dl className="rows">
           <div className="row">
-            <dt>MRI 장비</dt>
-            <dd>
-              {hospital.mriCount != null ? <>보유 {hospital.mriCount}대</> : <Missing text="정보 확인 필요" />}
+            <dt>
+              MRI 장비
               <Source label="의료장비" />
+            </dt>
+            <dd>
+              {hospital.mriCount != null ? <span className="row-value">보유 {hospital.mriCount}대</span> : <Missing text="정보 확인 필요" />}
             </dd>
           </div>
           <div className="row">
-            <dt>정형외과</dt>
-            <dd>
-              {hospital.hasOrtho === true ? "진료" : <Missing text="정보 확인 필요" />}
+            <dt>
+              정형외과
               <Source label="진료과목" />
-            </dd>
+            </dt>
+            <dd>{hospital.hasOrtho === true ? "진료" : <Missing text="정보 확인 필요" />}</dd>
           </div>
           <div className="row">
-            <dt>MRI 비급여</dt>
+            <dt>
+              MRI 비급여
+              <Source label="비급여" />
+            </dt>
             <dd>
-              {hospital.hasMriNonpay === true ? (
+              {disclosed ? (
                 <button
                   type="button"
                   className="nonpay-open"
@@ -171,7 +199,6 @@ function DetailInner() {
               ) : (
                 <Missing text="정보 확인 필요" />
               )}
-              <Source label="비급여" />
             </dd>
           </div>
         </dl>
@@ -184,10 +211,12 @@ function DetailInner() {
               track("hospital_type_view", { from: "detail" }, "S3");
             }}
           >
-            <dt>병원 종류</dt>
+            <dt>
+              병원 종류
+              <Source label="병원정보" />
+            </dt>
             <dd>
               {typeText || <Missing text="정보 없음" />}
-              <Source label="병원정보" />
               <span className="row-chevron" aria-hidden>
                 ›
               </span>
@@ -195,25 +224,67 @@ function DetailInner() {
           </div>
           <div className="row">
             <dt>전화번호</dt>
-            <dd>{phone ? <span className="num">{phone}</span> : <Missing text="정보 없음" />}</dd>
+            <dd>{phone ? <span className="num row-value">{phone}</span> : <Missing text="정보 없음" />}</dd>
           </div>
           <div className="row">
             <dt>주소</dt>
-            <dd>{hospital.addr || <Missing text="정보 없음" />}</dd>
+            <dd>
+              {hospital.addr ? (
+                <>
+                  <span className="addr-text">{hospital.addr}</span>
+                  <button type="button" className="copy-btn" onClick={() => void copyAddress()}>
+                    복사
+                  </button>
+                </>
+              ) : (
+                <Missing text="정보 없음" />
+              )}
+            </dd>
           </div>
         </dl>
-        {hasMap ? (
+
+        {hospital.addr || hasMap ? (
           <div className="map-card">
-            <iframe
-              className="map-embed"
-              title={`${hospital.name} 위치`}
-              src={mapEmbedUrl(hospital.lat as number, hospital.lng as number)}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+            <div className="map-head">
+              <div>
+                {dong ? <span className="dong-chip">{dong}</span> : null}
+                <p>{hospital.addr}</p>
+                <span>{hospital.name}</span>
+              </div>
+              {hospital.addr ? (
+                <button type="button" className="map-copy" onClick={() => void copyAddress()}>
+                  주소 복사
+                </button>
+              ) : null}
+            </div>
+            {hasMap ? (
+              <iframe
+                className="map-embed"
+                title={`${hospital.name} 위치`}
+                src={mapEmbedUrl(hospital.lat as number, hospital.lng as number)}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            ) : null}
           </div>
         ) : null}
-        <p className="limit-note">장비가 있어도 예약 상황에 따라 검사가 어려울 수 있어요. 전화로 확인해 주세요.</p>
+
+        <section className="exam-card">
+          <div className="exam-head">
+            <h2>검사 가능 정밀 항목 현황</h2>
+            {hospital.status === "confirmed" ? <span className="exam-live">즉시 시행 가능</span> : null}
+          </div>
+          {examItems.map((item) => (
+            <div className="exam-row" key={item.name}>
+              <p>{item.name}</p>
+              <span className={`exam-badge ${item.available ? "ok" : "need"}`}>
+                {item.available ? "검사 가능" : "확인 필요"}
+              </span>
+            </div>
+          ))}
+        </section>
+
+        <p className="portal-note">{PORTAL_NOTICE}</p>
       </div>
 
       <div className={`sticky-cta ${showCall ? "cta-pair" : "cta-pair single"}`}>

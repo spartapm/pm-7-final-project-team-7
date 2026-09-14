@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandHeader } from "@/components/BrandHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { HospitalCard } from "@/components/HospitalCard";
@@ -7,10 +8,10 @@ import { LoadingState } from "@/components/LoadingState";
 import { LocationBanner } from "@/components/LocationBanner";
 import { SortChips } from "@/components/SortChips";
 import { Toast } from "@/components/Toast";
-import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
 import {
   GEO_DENIED_TOAST,
+  LIST_GUIDE,
   LIST_SCROLL_KEY,
   LIST_SORT_KEY,
   displayPartLabel,
@@ -60,7 +61,6 @@ function ListInner() {
   const geo = useGeolocation();
   const hospitals = useHospitals();
   const [sort, setSort] = useState<SortMode>(() => readSavedSort() ?? "distance");
-  const [guide, setGuide] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const demoLoading = isDemoLoading(part, region);
   const demoError = isDemoError(part, region);
@@ -82,7 +82,7 @@ function ListInner() {
   const origin = hasGeo ? { lat: geo.lat, lng: geo.lng } : null;
   const homeHref = homeQuery(part, region ?? "all", group);
   const partLabel = displayPartLabel(part);
-  const title = `${regionLabel(region ?? "all")} · ${partLabel}`;
+  const regionText = region === "all" || !region ? "대전 전체" : `대전 ${regionLabel(region)}`;
 
   const list = useMemo(() => {
     if (!region) return [];
@@ -131,30 +131,32 @@ function ListInner() {
     track("sort_change", { sort: mode }, "S2");
   }
 
-  const topbar = (
-    <div className="topbar">
-      <button type="button" className="icon-btn" onClick={() => router.push(homeHref)} aria-label="뒤로">
-        ←
-      </button>
-      <div className="topbar-title">{title}</div>
-      <button
-        type="button"
-        className="link-btn"
-        onClick={() => {
-          track("condition_change", {}, "S2");
-          router.push(homeHref);
-        }}
-      >
-        조건 변경
-      </button>
+  function goHome() {
+    track("condition_change", {}, "S2");
+    router.push(homeHref);
+  }
+
+  const filter = (
+    <div className="filter-bar">
+      <div className="filter-chip">
+        <div>
+          <strong>{regionText}</strong>
+          <em>•</em>
+          <span>{partLabel} MRI</span>
+        </div>
+        <button type="button" className="filter-change" onClick={goHome}>
+          조건 변경 ›
+        </button>
+      </div>
+      <SortChips value={hasGeo ? sort : "type"} distanceEnabled={hasGeo} onChange={changeSort} />
     </div>
   );
 
   if (demoError) {
     return (
       <div className="page">
+        <BrandHeader variant="list" />
         <div className="page-body">
-          {topbar}
           <ErrorState
             onRetry={() => {
               track("list_retry", { demo: true }, "S2");
@@ -170,8 +172,8 @@ function ListInner() {
   if (phase === "error") {
     return (
       <div className="page">
+        <BrandHeader variant="list" />
         <div className="page-body">
-          {topbar}
           <ErrorState
             onRetry={() => {
               track("list_retry", {}, "S2");
@@ -187,12 +189,8 @@ function ListInner() {
   if (list.length === 0) {
     return (
       <div className="page">
+        <BrandHeader variant="list" />
         <div className="page-body">
-          <div className="topbar">
-            <button type="button" className="icon-btn" onClick={() => router.push(homeHref)} aria-label="뒤로">
-              ←
-            </button>
-          </div>
           <EmptyState
             regionName={regionLabel(region ?? "all")}
             onAllDaejeon={() => {
@@ -211,31 +209,9 @@ function ListInner() {
 
   return (
     <div className="page">
+      <BrandHeader variant="list" />
+      {filter}
       <div className="page-body">
-        {topbar}
-        <div className="result-row">
-          <div className="result-count">
-            {list.length}곳
-            {hasGeo ? " · 📍 현재 위치 기준" : ""}
-          </div>
-          <SortChips
-            value={hasGeo ? sort : "type"}
-            distanceEnabled={hasGeo}
-            onChange={changeSort}
-          />
-        </div>
-        <div className="type-link-row">
-          <button
-            type="button"
-            className="type-link"
-            onClick={() => {
-              setGuide(true);
-              track("hospital_type_view", { from: "list" }, "S2");
-            }}
-          >
-            병원 종류가 뭐예요?
-          </button>
-        </div>
         {geoFailed ? (
           <LocationBanner
             onRetry={() => {
@@ -278,17 +254,15 @@ function ListInner() {
                 );
               }}
             >
-              <HospitalCard
-                hospital={hospital}
-                distanceLabel={distanceLabel}
-                href={href}
-                showDistrict={region === "all"}
-              />
+              <HospitalCard hospital={hospital} distanceLabel={distanceLabel} href={href} />
             </div>
           );
         })}
+        <div className="list-guide">
+          <strong>안내 사항</strong>
+          {LIST_GUIDE}
+        </div>
       </div>
-      {guide ? <TypeGuideModal onClose={() => setGuide(false)} /> : null}
       {toast ? <Toast>{toast}</Toast> : null}
     </div>
   );
