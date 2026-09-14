@@ -37,6 +37,7 @@ const rows = snapshot.hospitals.map((h) => ({
   has_ortho: ternary(h.hasOrtho),
   ortho_specialist_count: h.orthoSpecialistCount,
   has_mri_nonpay: ternary(h.hasMriNonpay),
+  mri_nonpay_items: Array.isArray(h.mriNonpayItems) ? h.mriNonpayItems : [],
   status: h.status === "high" ? "high" : "unknown",
   evidence_id: h.evidenceId,
   evidence: h.evidence,

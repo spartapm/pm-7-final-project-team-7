@@ -10,12 +10,13 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Toast } from "@/components/Toast";
 import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
-import { CARE_LEVEL_LABEL, MAPS_MISSING_TOAST, PORTAL_NOTICE, displayPartLabel, resolvePart } from "@/lib/constants";
+import { MAPS_MISSING_TOAST, PORTAL_NOTICE, displayPartLabel, hospitalKindLabel, resolvePart } from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
 import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
-import { examItemsForPart, nonpayItemsForPart, nonpayTitle } from "@/lib/nonpay";
+import { examItemsFromHospital, itemsForPart, nonpayTitle } from "@/lib/nonpay";
 import { canDial, displayPhone, hasPhoneNumber } from "@/lib/phone";
 import { analyticsStatus } from "@/lib/status";
+import type { NonpayItem } from "@/lib/types";
 import { useHospitals } from "@/hooks/useHospitals";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -44,6 +45,7 @@ function DetailInner() {
   const [guide, setGuide] = useState(false);
   const [nonpayOpen, setNonpayOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [liveItems, setLiveItems] = useState<NonpayItem[] | null>(null);
 
   useEffect(() => {
     if (loaded.status !== "ready") return;
@@ -62,6 +64,26 @@ function DetailInner() {
       "S3"
     );
   }, [loaded.status, hospital, ykiho, search]);
+
+  useEffect(() => {
+    if (!hospital) return;
+    if (hospital.mriNonpayItems?.length) {
+      setLiveItems(hospital.mriNonpayItems);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/hospitals/${encodeURIComponent(ykiho)}/nonpay`)
+      .then((res) => res.json())
+      .then((data: { items?: NonpayItem[] }) => {
+        if (!cancelled && Array.isArray(data.items)) setLiveItems(data.items);
+      })
+      .catch(() => {
+        if (!cancelled) setLiveItems([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [hospital, ykiho]);
 
   const qs = search.toString();
   const listHref = qs ? `/hospitals?${qs}` : "/";
@@ -110,9 +132,11 @@ function DetailInner() {
   const hasMap = hospital.lat != null && hospital.lng != null;
   const selectedPart = resolvePart(search.get("part"), search.get("group"), search.get("other"));
   const partLabel = displayPartLabel(selectedPart);
-  const typeText = hospital.clCdNm
-    ? `${hospital.clCdNm}${hospital.careLevel ? ` · ${CARE_LEVEL_LABEL[hospital.careLevel]}` : ""}`
-    : null;
+  const kindLabel = hospitalKindLabel(hospital.clCd, hospital.clCdNm);
+  const nonpayItems = (hospital.mriNonpayItems?.length ? hospital.mriNonpayItems : liveItems) ?? [];
+  const examItems = examItemsFromHospital(nonpayItems, selectedPart);
+  const sheetItems = itemsForPart(nonpayItems, selectedPart);
+  const disclosed = examItems.length > 0;
   const mapTarget = {
     name: hospital.name,
     addr: hospital.addr,
@@ -121,8 +145,6 @@ function DetailInner() {
   };
   const addr = hospital.addr;
   const dong = neighborhoodFromAddr(addr);
-  const examItems = examItemsForPart(selectedPart, hospital.hasMriNonpay === true);
-  const disclosed = hospital.hasMriNonpay === true;
 
   async function copyAddress() {
     if (!addr) return;
@@ -146,11 +168,7 @@ function DetailInner() {
       <BrandHeader variant="detail" onBack={goBack} />
       <div className="page-body">
         <div className="verify-row">
-          {hospital.careLevel === 1 ? (
-            <span className="verify-chip navy">상급종합병원</span>
-          ) : hospital.clCdNm ? (
-            <span className="verify-chip navy">{hospital.clCdNm}</span>
-          ) : null}
+          <span className="verify-chip navy">{kindLabel}</span>
           <span className="verify-chip gray">심평원 공공데이터 검증</span>
         </div>
 
@@ -216,7 +234,7 @@ function DetailInner() {
               <Source label="병원정보" />
             </dt>
             <dd>
-              {typeText || <Missing text="정보 없음" />}
+              {kindLabel}
               <span className="row-chevron" aria-hidden>
                 ›
               </span>
@@ -274,14 +292,25 @@ function DetailInner() {
             <h2>검사 가능 정밀 항목 현황</h2>
             {hospital.status === "confirmed" ? <span className="exam-live">즉시 시행 가능</span> : null}
           </div>
-          {examItems.map((item) => (
-            <div className="exam-row" key={item.name}>
-              <p>{item.name}</p>
-              <span className={`exam-badge ${item.available ? "ok" : "need"}`}>
-                {item.available ? "검사 가능" : "확인 필요"}
-              </span>
+          {examItems.length ? (
+            examItems.map((item) => (
+              <div className="exam-row" key={item.name}>
+                <p>{item.name}</p>
+                <span className={`exam-badge ${item.available ? "ok" : "need"}`}>
+                  {item.available ? "검사 가능" : "확인 필요"}
+                </span>
+              </div>
+            ))
+          ) : (
+            <div className="exam-row">
+              <p>
+                {liveItems == null && !hospital.mriNonpayItems?.length
+                  ? "공개된 MRI 항목을 불러오는 중이에요."
+                  : `이 병원에서 공개된 ${partLabel} MRI 항목을 확인하지 못했어요.`}
+              </p>
+              <span className="exam-badge need">{liveItems == null && !hospital.mriNonpayItems?.length ? "불러오는 중" : "확인 필요"}</span>
             </div>
-          ))}
+          )}
         </section>
 
         <p className="portal-note">{PORTAL_NOTICE}</p>
@@ -342,7 +371,7 @@ function DetailInner() {
       {nonpayOpen ? (
         <NonpaySheet
           title={nonpayTitle(selectedPart)}
-          items={nonpayItemsForPart(selectedPart)}
+          items={sheetItems}
           onClose={() => setNonpayOpen(false)}
         />
       ) : null}

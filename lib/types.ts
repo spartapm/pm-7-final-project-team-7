@@ -28,6 +28,8 @@ export type HospitalStatus = "confirmed" | "high" | "unknown";
 export type SortMode = "distance" | "type";
 export type Ternary = true | false | "unknown";
 
+export type NonpayItem = { name: string; price?: string };
+
 export type Hospital = {
   ykiho: string;
   name: string;
@@ -46,6 +48,7 @@ export type Hospital = {
   hasOrtho: Ternary;
   orthoSpecialistCount: number | null;
   hasMriNonpay: Ternary;
+  mriNonpayItems: NonpayItem[];
   status: HospitalStatus;
   evidenceId: "CONFIRMED" | "F1" | "F2" | "F3" | "F4";
   evidence: string;

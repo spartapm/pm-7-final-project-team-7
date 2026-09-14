@@ -102,6 +102,19 @@ export const CARE_LEVEL_LABEL: Record<number, string> = {
   0: "기타",
 };
 
+/** 디자인 명세: 상급종합 / 병원·종합병원 / 의원 */
+export function hospitalKindLabel(clCd: string, clCdNm?: string | null) {
+  const code = String(clCd).padStart(2, "0");
+  if (code === "01") return "상급종합";
+  if (code === "31" || code === "51" || code === "92") return "의원";
+  if (code === "11" || code === "21" || code === "28" || code === "29" || code === "41" || code === "91") {
+    return "병원·종합병원";
+  }
+  if (clCdNm?.includes("상급")) return "상급종합";
+  if (clCdNm?.includes("의원")) return "의원";
+  return clCdNm || "의료기관";
+}
+
 export const TYPE_GUIDE = {
   title: "병원 종류가 뭐예요?",
   body: [

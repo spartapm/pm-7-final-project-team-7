@@ -138,7 +138,8 @@ async function detailsFor(hosp, index, total) {
   let hasMri = false;
   let hasOrtho = "unknown";
   let orthoSpecialistCount = null;
-  let hasMriNonpay = String(hosp.clCd) === "31" ? "unknown" : "unknown";
+  let hasMriNonpay = "unknown";
+  let mriNonpayItems = [];
 
   try {
     const eq = await getJson(
@@ -159,7 +160,7 @@ async function detailsFor(hosp, index, total) {
 
   if (!hasMri) {
     if ((index + 1) % 20 === 0) console.log(`details ${index + 1}/${total} (no MRI skip)`);
-    return { mriCount, hasMri, hasOrtho, orthoSpecialistCount, hasMriNonpay };
+    return { mriCount, hasMri, hasOrtho, orthoSpecialistCount, hasMriNonpay, mriNonpayItems };
   }
 
   try {
@@ -179,24 +180,32 @@ async function detailsFor(hosp, index, total) {
     hasOrtho = "unknown";
   }
 
-  if (String(hosp.clCd) !== "31") {
-    try {
-      const np = await paged(
-        (page) =>
-          `${NONPAY}?serviceKey=${KEY_B}&ykiho=${ykiho}&pageNo=${page}&numOfRows=100&_type=json`
-      );
-      hasMriNonpay = np.some((x) => isMriName(x.npayKorNm) || isMriName(x.yadmNpayCdNm))
-        ? true
-        : false;
-    } catch {
-      hasMriNonpay = "unknown";
+  try {
+    const np = await paged(
+      (page) =>
+        `${NONPAY}?serviceKey=${KEY_B}&ykiho=${ykiho}&pageNo=${page}&numOfRows=100&_type=json`
+    );
+    mriNonpayItems = [];
+    const seen = new Set();
+    for (const row of np) {
+      const name = String(row.npayKorNm || row.yadmNpayCdNm || "").trim();
+      if (!name || !isMriName(name) || seen.has(name)) continue;
+      seen.add(name);
+      const amt = Number(row.curAmt);
+      mriNonpayItems.push({
+        name,
+        price: Number.isFinite(amt) && amt > 0 ? `${Math.round(amt).toLocaleString("ko-KR")}원` : undefined,
+      });
     }
+    hasMriNonpay = mriNonpayItems.length > 0;
+  } catch {
+    hasMriNonpay = "unknown";
   }
 
   if ((index + 1) % 10 === 0) {
     console.log(`details ${index + 1}/${total}`);
   }
-  return { mriCount, hasMri, hasOrtho, orthoSpecialistCount, hasMriNonpay };
+  return { mriCount, hasMri, hasOrtho, orthoSpecialistCount, hasMriNonpay, mriNonpayItems };
 }
 
 function normalizeTel(raw) {
@@ -236,6 +245,7 @@ async function main() {
       hasOrtho: d.hasOrtho,
       orthoSpecialistCount: d.orthoSpecialistCount,
       hasMriNonpay: d.hasMriNonpay,
+      mriNonpayItems: d.mriNonpayItems || [],
       ...judged,
       sourceDate,
     });

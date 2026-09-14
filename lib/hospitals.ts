@@ -24,6 +24,7 @@ type HospitalRow = {
   has_ortho: boolean | null;
   ortho_specialist_count: number | null;
   has_mri_nonpay: boolean | null;
+  mri_nonpay_items?: { name: string; price?: string }[] | null;
   status: "high" | "unknown";
   evidence_id: "F1" | "F2" | "F3" | "F4";
   evidence: string;
@@ -62,6 +63,7 @@ function mapRow(row: HospitalRow): Hospital {
     hasOrtho: ternary(row.has_ortho),
     orthoSpecialistCount: row.ortho_specialist_count,
     hasMriNonpay: ternary(row.has_mri_nonpay),
+    mriNonpayItems: Array.isArray(row.mri_nonpay_items) ? row.mri_nonpay_items : [],
     status: row.status,
     evidenceId: row.evidence_id,
     evidence: row.evidence,
@@ -78,6 +80,7 @@ function withLocalFields(hospital: Hospital): Hospital {
     applyConfirmation({
       ...hospital,
       mriScope: hospital.mriScope ?? null,
+      mriNonpayItems: hospital.mriNonpayItems ?? [],
       reservationStatus: hospital.reservationStatus ?? null,
       confirmedAt: hospital.confirmedAt ?? null,
     })

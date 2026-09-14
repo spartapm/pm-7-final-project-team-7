@@ -61,12 +61,19 @@ export function NonpaySheet({
           선택한 부위 기준으로 공개된 MRI 비급여 항목입니다.
         </p>
         <ul className="nonpay-list">
-          {items.map((item) => (
-            <li key={item.name}>
-              <span className="nonpay-name">{item.name}</span>
-              <span className="nonpay-price">{item.price ?? "확인 필요"}</span>
+          {items.length ? (
+            items.map((item) => (
+              <li key={item.name}>
+                <span className="nonpay-name">{item.name}</span>
+                <span className="nonpay-price">{item.price ?? "확인 필요"}</span>
+              </li>
+            ))
+          ) : (
+            <li>
+              <span className="nonpay-name">이 부위로 공개된 MRI 비급여 항목을 확인하지 못했어요.</span>
+              <span className="nonpay-price">확인 필요</span>
             </li>
-          ))}
+          )}
         </ul>
         <p className="nonpay-sheet-note">{NONPAY_SHEET_NOTE}</p>
       </div>

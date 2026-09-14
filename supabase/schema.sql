@@ -27,6 +27,7 @@ create table if not exists public.hospitals (
   has_ortho boolean,
   ortho_specialist_count integer,
   has_mri_nonpay boolean,
+  mri_nonpay_items jsonb not null default '[]'::jsonb,
   status text not null check (status in ('high', 'unknown')),
   evidence_id text not null,
   evidence text not null,
@@ -78,3 +79,6 @@ grant all on public.snapshots to anon, authenticated, service_role;
 grant all on public.hospitals to anon, authenticated, service_role;
 grant all on public.app_events to anon, authenticated, service_role;
 grant usage, select on all sequences in schema public to anon, authenticated, service_role;
+
+alter table public.hospitals add column if not exists mri_nonpay_items jsonb not null default '[]'::jsonb;
+notify pgrst, 'reload schema';

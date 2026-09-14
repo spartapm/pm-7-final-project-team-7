@@ -1,49 +1,57 @@
 import { displayPartLabel } from "./constants";
-import type { PartId } from "./types";
+import type { NonpayItem, PartId } from "./types";
 
-export type NonpayItem = { name: string; price?: string; note?: string };
+export type { NonpayItem };
 
-const ITEMS: Record<PartId, NonpayItem[]> = {
-  brain: [{ name: "자기공명영상진단(MRI) 뇌" }, { name: "자기공명영상진단(MRI) 뇌조직" }],
-  vessel: [{ name: "자기공명영상진단(MRA) 뇌혈관" }, { name: "자기공명영상진단(MRI) 뇌혈관" }],
-  carotid: [{ name: "자기공명영상진단(MRA) 경동맥" }, { name: "자기공명영상진단(MRI) 경부혈관" }],
-  lumbar: [{ name: "자기공명영상진단(MRI) 요추" }],
-  cervical: [{ name: "자기공명영상진단(MRI) 경추" }],
-  shoulder: [
-    { name: "자기공명영상진단(MRI) 어깨관절(견관절)" },
-    { name: "자기공명영상진단(MRI) 상지" },
-  ],
-  knee: [
-    { name: "자기공명영상진단(MRI) 무릎관절(슬관절)" },
-    { name: "자기공명영상진단(MRI) 하지" },
-  ],
-  hand: [
-    { name: "자기공명영상진단(MRI) 손목관절(수관절)" },
-    { name: "자기공명영상진단(MRI) 손" },
-  ],
-  foot: [
-    { name: "자기공명영상진단(MRI) 발목관절(족관절)" },
-    { name: "자기공명영상진단(MRI) 발" },
-  ],
-  pelvis: [{ name: "자기공명영상진단(MRI) 골반" }, { name: "자기공명영상진단(MRI) 고관절" }],
-  joint: [{ name: "자기공명영상진단(MRI) 관절" }, { name: "자기공명영상진단(MRI) 사지관절" }],
-  ligament: [{ name: "자기공명영상진단(MRI) 인대" }, { name: "자기공명영상진단(MRI) 관절 주변 연부조직" }],
-  cartilage: [{ name: "자기공명영상진단(MRI) 연골" }, { name: "자기공명영상진단(MRI) 관절연골" }],
-  muscle: [{ name: "자기공명영상진단(MRI) 근육" }, { name: "자기공명영상진단(MRI) 연부조직" }],
+const PART_MATCH: Record<PartId, RegExp> = {
+  brain: /뇌(?!혈관)|두부|뇌조직|뇌실질/i,
+  vessel: /뇌혈관|두개내혈관|MRA/i,
+  carotid: /경동맥|경부혈관|경부\s*혈관/i,
+  lumbar: /요추|요천추|허리|lumbar/i,
+  cervical: /경추|목디스크|cervical/i,
+  shoulder: /어깨|견관절/i,
+  knee: /무릎|슬관절/i,
+  hand: /손목|수관절|(?:^|\/|\s)손(?:\/|\s|$)/i,
+  foot: /발목|족관절|(?:^|\/|\s)발(?:\/|\s|$)/i,
+  pelvis: /골반|고관절/i,
+  joint: /관절/i,
+  ligament: /인대/i,
+  cartilage: /연골/i,
+  muscle: /근육|연부조직/i,
 };
 
-export function nonpayItemsForPart(part: PartId | null): NonpayItem[] {
-  if (part && ITEMS[part]) return ITEMS[part];
-  return ITEMS.lumbar;
+export function isMriName(value: string) {
+  return /MRI|자기공명|엠아르아이|MRA/i.test(value);
+}
+
+export function matchesPart(name: string, part: PartId | null) {
+  if (!part) return true;
+  return PART_MATCH[part].test(name);
+}
+
+export function uniqueNonpayItems(items: NonpayItem[]): NonpayItem[] {
+  const seen = new Set<string>();
+  const out: NonpayItem[] = [];
+  for (const item of items) {
+    const name = item.name.trim();
+    if (!name || seen.has(name)) continue;
+    seen.add(name);
+    out.push({ name, price: item.price });
+  }
+  return out;
+}
+
+export function itemsForPart(items: NonpayItem[], part: PartId | null) {
+  const all = uniqueNonpayItems(items);
+  if (!part) return all;
+  return all.filter((item) => matchesPart(item.name, part));
+}
+
+export function examItemsFromHospital(items: NonpayItem[], part: PartId | null) {
+  const matched = uniqueNonpayItems(items).filter((item) => matchesPart(item.name, part));
+  return matched.map((item) => ({ name: item.name, available: true }));
 }
 
 export function nonpayTitle(part: PartId | null) {
   return `${displayPartLabel(part)} MRI 비급여 항목`;
-}
-
-export function examItemsForPart(part: PartId | null, disclosed: boolean) {
-  return nonpayItemsForPart(part).map((item) => ({
-    name: item.name,
-    available: disclosed,
-  }));
 }
