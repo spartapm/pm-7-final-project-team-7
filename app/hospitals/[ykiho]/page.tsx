@@ -19,6 +19,7 @@ import {
   resolvePart,
 } from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
+import { rememberListHospital } from "@/lib/list-memory";
 import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
 import { displayItemLabel, examItemsFromHospital, itemsForPart, nonpayTitle } from "@/lib/nonpay";
 import { canDial, displayPhone, hasPhoneNumber } from "@/lib/phone";
@@ -92,16 +93,25 @@ function DetailInner() {
     };
   }, [hospital, ykiho]);
 
+  useEffect(() => {
+    rememberListHospital(ykiho);
+  }, [ykiho]);
+
   const qs = search.toString();
   const listHref = qs ? `/hospitals?${qs}` : "/";
   const homeHref = "/";
 
   function goBack() {
-    if (search.get("part") && typeof window !== "undefined" && window.history.length > 1) {
+    rememberListHospital(ykiho);
+    if (search.get("part") || search.get("region")) {
+      router.replace(listHref);
+      return;
+    }
+    if (typeof window !== "undefined" && window.history.length > 1) {
       router.back();
       return;
     }
-    router.push(listHref);
+    router.push("/");
   }
 
   if (loaded.status === "loading") return <LoadingState onBack={() => router.push(homeHref)} />;

@@ -1,13 +1,13 @@
 "use client";
 
 import { BrandHeader } from "@/components/BrandHeader";
+import { CalendarIcon, CtaArrowIcon, HiraCheckIcon } from "@/components/Icons";
 import { PartSelector } from "@/components/PartSelector";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { RegionSelector } from "@/components/RegionSelector";
 import { TabBar } from "@/components/TabBar";
 import {
   HOME_SCROLL_KEY,
-  LIST_SCROLL_KEY,
   LIST_SORT_KEY,
   REGION_SCOPE_NOTE,
   REGION_SCOPE_SUB,
@@ -18,6 +18,7 @@ import {
   resolveGroup,
   resolvePart,
 } from "@/lib/constants";
+import { forgetListHospital } from "@/lib/list-memory";
 import { track } from "@/lib/analytics";
 import type { PartGroupId, PartId, RegionId } from "@/lib/types";
 import { Suspense, useEffect, useMemo, useState } from "react";
@@ -72,7 +73,7 @@ function HomeInner() {
     const shell = document.querySelector(".app-shell");
     sessionStorage.setItem(HOME_SCROLL_KEY, String(shell ? shell.scrollTop : window.scrollY));
     sessionStorage.removeItem(LIST_SORT_KEY);
-    sessionStorage.removeItem(LIST_SCROLL_KEY);
+    forgetListHospital();
     track("search_submit", { region, part }, "S1");
     router.push(`/hospitals?${listQuery(part, region, group)}`);
   }
@@ -82,7 +83,10 @@ function HomeInner() {
       <BrandHeader variant="home" />
       <div className="page-body">
         <div className="hero">
-          <span className="hero-kicker">대전 특화 안내</span>
+          <div className="hero-top">
+            <span className="hero-kicker">대전 특화 안내</span>
+            <CalendarIcon />
+          </div>
           <h2>
             MRI, 어디서 찍을 수
             <br />
@@ -90,7 +94,10 @@ function HomeInner() {
           </h2>
           <p>우리 동네 MRI 보유 병원과 촬영 장비 정보를 투명하게 비교해보세요.</p>
           <div className="hero-meta">
-            <span>건강보험심사평가원 최신 공공데이터</span>
+            <span className="hero-meta-left">
+              <HiraCheckIcon />
+              건강보험심사평가원 최신 공공데이터
+            </span>
             <span className="hero-chip">100 % 공공 기반</span>
           </div>
         </div>
@@ -135,7 +142,9 @@ function HomeInner() {
         </div>
 
         <div className="home-cta">
-          <PrimaryButton onClick={submit}>{ctaLabel}</PrimaryButton>
+          <PrimaryButton onClick={submit} icon={<CtaArrowIcon />}>
+            {ctaLabel}
+          </PrimaryButton>
           {blocked ? <p className="hint">지역과 부위를 모두 선택해주세요</p> : null}
         </div>
       </div>

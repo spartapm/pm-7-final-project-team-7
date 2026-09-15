@@ -4,6 +4,7 @@ import { BrandHeader } from "@/components/BrandHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { HospitalCard } from "@/components/HospitalCard";
+import { ListInfoIcon, PinIcon, SlidersIcon } from "@/components/Icons";
 import { LoadingState } from "@/components/LoadingState";
 import { LocationBanner } from "@/components/LocationBanner";
 import { SortChips } from "@/components/SortChips";
@@ -24,6 +25,7 @@ import {
 } from "@/lib/constants";
 import { formatDistance, haversineMeters } from "@/lib/distance";
 import { hospitalsByRegion, regionLabel, sortHospitals } from "@/lib/hospitals";
+import { forgetListHospital, isListHospitalInView, readListHospital, scrollListHospitalIntoView } from "@/lib/list-memory";
 import { isDemoError, isDemoLoading, DEMO_LOADING_MS } from "@/lib/demo";
 import { analyticsStatus } from "@/lib/status";
 import type { SortMode } from "@/lib/types";
@@ -111,17 +113,38 @@ function ListInner() {
     if (phase === "ready") {
       if (list.length === 0) track("no_result", { region: region ?? "", part }, "S5");
       else track("list_view", { region: region ?? "", part, result_count: list.length }, "S2");
-      const y = sessionStorage.getItem(LIST_SCROLL_KEY);
-      if (y) {
-        const shell = document.querySelector(".app-shell");
-        requestAnimationFrame(() => {
-          if (shell) shell.scrollTop = Number(y);
-          else window.scrollTo(0, Number(y));
-        });
-      }
     }
     if (phase === "error") track("list_error", { reason: "timeout" }, "S2");
   }, [phase, list.length, region, part]);
+
+  useEffect(() => {
+    if (phase !== "ready" || list.length === 0 || demoHold) return;
+    const focusedYkiho = readListHospital() ?? "";
+    if (!focusedYkiho) return;
+    let cancelled = false;
+    let seenInView = 0;
+    const timers: number[] = [];
+
+    function run() {
+      if (cancelled) return;
+      scrollListHospitalIntoView(focusedYkiho);
+      if (isListHospitalInView(focusedYkiho)) {
+        seenInView += 1;
+        if (seenInView >= 2) forgetListHospital();
+        return;
+      }
+      seenInView = 0;
+    }
+
+    [0, 50, 120, 240, 400, 700, 1100, 1600].forEach((ms) => {
+      timers.push(window.setTimeout(run, ms));
+    });
+
+    return () => {
+      cancelled = true;
+      timers.forEach((id) => window.clearTimeout(id));
+    };
+  }, [phase, list, demoHold, geo.status, sort]);
 
   const qs = listQuery(part, region ?? "all", group);
 
@@ -140,12 +163,14 @@ function ListInner() {
     <div className="filter-bar">
       <div className="filter-chip">
         <div>
+          <PinIcon />
           <strong>{regionText}</strong>
           <em>•</em>
           <span>{partLabel} MRI</span>
         </div>
         <button type="button" className="filter-change" onClick={goHome}>
-          조건 변경 ›
+          조건 변경
+          <SlidersIcon />
         </button>
       </div>
       <SortChips value={hasGeo ? sort : "type"} distanceEnabled={hasGeo} onChange={changeSort} />
@@ -236,6 +261,7 @@ function ListInner() {
           return (
             <div
               key={hospital.ykiho}
+              data-ykiho={hospital.ykiho}
               onClick={() => {
                 saveListScroll();
                 sessionStorage.setItem(LIST_SORT_KEY, hasGeo ? sort : "type");
@@ -259,8 +285,11 @@ function ListInner() {
           );
         })}
         <div className="list-guide">
-          <strong>안내 사항</strong>
-          {LIST_GUIDE}
+          <ListInfoIcon />
+          <p>
+            <strong>안내 사항</strong>
+            {LIST_GUIDE}
+          </p>
         </div>
       </div>
       {toast ? <Toast>{toast}</Toast> : null}

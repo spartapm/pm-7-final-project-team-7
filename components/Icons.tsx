@@ -1,3 +1,59 @@
+function FigmaIcon({ src, size }: { src: string; size: number }) {
+  return <img src={src} alt="" width={size} height={size} aria-hidden />;
+}
+
+export function BellIcon() {
+  return <FigmaIcon src="/figma/bell.svg" size={20} />;
+}
+
+export function AvatarIcon() {
+  return <FigmaIcon src="/figma/avatar.svg" size={16} />;
+}
+
+export function BackIcon() {
+  return <FigmaIcon src="/figma/back.svg" size={20} />;
+}
+
+export function CalendarIcon() {
+  return <FigmaIcon src="/figma/calendar.svg" size={20} />;
+}
+
+export function HiraCheckIcon() {
+  return <FigmaIcon src="/figma/hira-check.svg" size={14} />;
+}
+
+export function RegionCheckIcon() {
+  return <FigmaIcon src="/figma/region-check.svg" size={14} />;
+}
+
+export function CtaArrowIcon() {
+  return <FigmaIcon src="/figma/cta-arrow.svg" size={16} />;
+}
+
+export function TabHomeIcon() {
+  return <FigmaIcon src="/figma/tab-home.svg" size={20} />;
+}
+
+export function TabNearbyIcon() {
+  return <FigmaIcon src="/figma/tab-nearby.svg" size={20} />;
+}
+
+export function PinIcon() {
+  return <FigmaIcon src="/figma/pin.svg" size={16} />;
+}
+
+export function SlidersIcon() {
+  return <FigmaIcon src="/figma/sliders.svg" size={12} />;
+}
+
+export function CardChevronIcon() {
+  return <FigmaIcon src="/figma/card-chevron.svg" size={14} />;
+}
+
+export function ListInfoIcon() {
+  return <FigmaIcon src="/figma/list-info.svg" size={16} />;
+}
+
 export function PhoneIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>

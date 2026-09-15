@@ -104,16 +104,17 @@ export const CARE_LEVEL_LABEL: Record<number, string> = {
   0: "기타",
 };
 
-/** 디자인 명세: 상급종합 / 병원·종합병원 / 의원 */
+/** 09/15 명세: 상급종합 / 종합병원 / 병원 / 의원. 목록·상세 동일. */
 export function hospitalKindLabel(clCd: string, clCdNm?: string | null) {
   const code = String(clCd).padStart(2, "0");
   if (code === "01") return "상급종합";
+  if (code === "11") return "종합병원";
+  if (code === "21") return "병원";
   if (code === "31" || code === "51" || code === "92") return "의원";
-  if (code === "11" || code === "21" || code === "28" || code === "29" || code === "41" || code === "91") {
-    return "병원·종합병원";
-  }
   if (clCdNm?.includes("상급")) return "상급종합";
+  if (clCdNm?.includes("종합병원")) return "종합병원";
   if (clCdNm?.includes("의원")) return "의원";
+  if (clCdNm?.includes("병원")) return "병원";
   return clCdNm || "의료기관";
 }
 
@@ -146,6 +147,7 @@ export const GPS_OPTIONS: PositionOptions = {
 
 export const LIST_TIMEOUT_MS = 5000;
 export const LIST_SCROLL_KEY = "ieo-list-scroll";
+export const LIST_FOCUS_KEY = "ieo-list-focus";
 export const LIST_SORT_KEY = "ieo-list-sort";
 export const HOME_SCROLL_KEY = "ieo-home-scroll";
 export const GEO_DENIED_TOAST = "브라우저 설정에서 위치 권한을 허용해 주세요";
