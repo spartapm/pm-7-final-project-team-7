@@ -42,6 +42,8 @@ const rows = snapshot.hospitals.map((h) => ({
   evidence_id: h.evidenceId,
   evidence: h.evidence,
   source_date: h.sourceDate,
+  reservation_status: h.reservationStatus ?? null,
+  confirmed_at: h.confirmedAt ?? null,
 }));
 
 async function upsert(table, body, onConflict) {

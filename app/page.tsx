@@ -2,6 +2,7 @@
 
 import { BrandHeader } from "@/components/BrandHeader";
 import { CalendarIcon, CtaArrowIcon, HiraCheckIcon } from "@/components/Icons";
+import { MriGuide } from "@/components/MriGuide";
 import { PartSelector } from "@/components/PartSelector";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { RegionSelector } from "@/components/RegionSelector";
@@ -101,6 +102,8 @@ function HomeInner() {
             <span className="hero-chip">100 % 공공 기반</span>
           </div>
         </div>
+
+        <MriGuide />
 
         <div className="section-head" id="section-part">
           <div className="section-label">어느 부위를 찍으시나요?</div>

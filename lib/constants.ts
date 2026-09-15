@@ -14,6 +14,19 @@ export const PORTAL_NOTICE_BODY =
 export const PORTAL_NOTICE = `${PORTAL_NOTICE_LEAD} ${PORTAL_NOTICE_BODY}`;
 export const NONPAY_SHEET_NOTE =
   "병원에 따라 비급여 항목 및 금액이 달라질 수 있어요. 정확한 검사 내용과 비용은 병원에 직접 문의해 주세요.";
+export const MRI_GUIDE_TITLE = "MRI 검사 이용 안내";
+export const MRI_GUIDE_ITEMS = [
+  {
+    title: "진료 소견서가 있는 경우",
+    body: "의원에서 발급받은 진료 소견서 또는 의뢰서를 지참하면, 병원에 따라 별도의 진료 없이 MRI 검사를 진행할 수 있습니다.",
+  },
+  {
+    title: "진료 소견서가 없는 경우",
+    body: "해당 의료기관에서 먼저 진료를 받은 후, 의료진의 판단에 따라 MRI 검사를 진행할 수 있습니다.",
+  },
+] as const;
+export const MRI_GUIDE_FOOT =
+  "의료기관마다 검사 절차와 예약 방식이 다를 수 있으므로, 방문 전 반드시 해당 병원에 검사 가능 여부와 준비 서류를 확인해주세요.";
 
 export const SIDO_DAEJEON = "250000";
 

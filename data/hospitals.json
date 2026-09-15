@@ -218,7 +218,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/전신/일반",
           "price": "820,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzExIyQxIyQzIyQ2MiQzNjEyMjIjNDEjJDEjJDgjJDgz",
@@ -496,7 +498,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/복부-골반/일반",
           "price": "400,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQ4OSQyNjEyMjIjODEjJDEjJDYjJDgz",
@@ -645,7 +649,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/혈관-뇌혈관/일반",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQ1IyQ5OSQyNjEwMDIjNjEjJDEjJDAjJDgz",
@@ -782,7 +788,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/근골격계-고관절/제한적 MRI(방사선 치료범위 및 위치결정 등)",
           "price": "100,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMiMkMiMkMDAkNDgxOTYxIzIxIyQxIyQxIyQ4MiQyNjEyMjIjNzEjJDEjJDgjJDgz",
@@ -806,7 +814,9 @@
       "evidenceId": "F1",
       "evidence": "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
       "sourceDate": "2026-09-04",
-      "mriNonpayItems": []
+      "mriNonpayItems": [],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMiMkMiMkMDAkNDgxOTYxIzMxIyQxIyQ3IyQ3MiQ0NjEwMDIjNTEjJDEjJDIjJDgz",
@@ -830,7 +840,9 @@
       "evidenceId": "F1",
       "evidence": "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
       "sourceDate": "2026-09-04",
-      "mriNonpayItems": []
+      "mriNonpayItems": [],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQyIyQzIyQwMCQyNjEyMjIjNjEjJDEjJDgjJDgz",
@@ -987,7 +999,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/복부-복부/일반",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ5OSQyNjE4MzIjNzEjJDEjJDgjJDgz",
@@ -1184,7 +1198,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/척추-요천추/일반",
           "price": "520,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQ2MiQzNjEyMjIjNTEjJDEjJDYjJDgz",
@@ -1269,7 +1285,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/뇌/일반",
           "price": "440,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzExIyQxIyQzIyQ5MiQyNjE0ODEjNTEjJDEjJDYjJDgz",
@@ -1382,7 +1400,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/척추-전척추/일반",
           "price": "600,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ5OSQzNjE0ODEjNjEjJDEjJDQjJDgz",
@@ -1615,7 +1635,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/흉부-흉부/일반",
           "price": "730,830원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ2MiQzNjE0ODEjNDEjJDEjJDQjJDgz",
@@ -1792,7 +1814,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/복부-복부/일반",
           "price": "540,000원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ3OSQzNjE0ODEjNDEjJDEjJDgjJDgz",
@@ -1801,7 +1825,7 @@
       "clCdNm": "종합병원",
       "careLevel": 2,
       "addr": "대전광역시 서구 둔산서로 95, (둔산동)",
-      "telno": "042-611-3000",
+      "telno": "1899-0001",
       "lat": 36.3553098,
       "lng": 127.3819888,
       "sgguCd": "250003",
@@ -2041,7 +2065,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/근골격계-발목관절/조영제 주입 전·후 촬영 판독",
           "price": "650,000원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzExIyQxIyQ3IyQxMyQyNjEyMjIjNDEjJDEjJDgjJDgz",
@@ -2150,7 +2176,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/뇌/일반",
           "price": "400,000원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQ1IyQ3OSQzNjEwMDIjNTEjJDEjJDIjJDgz",
@@ -2159,7 +2187,7 @@
       "clCdNm": "병원",
       "careLevel": 2,
       "addr": "대전광역시 서구 계룡로553번길 60,  (탄방동)",
-      "telno": "042-1566-9852",
+      "telno": "042-710-1962",
       "lat": 36.3455202,
       "lng": 127.3855438,
       "sgguCd": "250003",
@@ -2299,7 +2327,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/혈관-뇌혈관/일반",
           "price": "410,000원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQ1IyQ2MiQyNjEwMDIjODEjJDEjJDYjJDgz",
@@ -2472,7 +2502,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/척추-척추강/일반",
           "price": "200,000원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQyIyQxIyQwMCQzNjEyMjIjNjEjJDEjJDgjJDgz",
@@ -2601,7 +2633,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/혈관-경부혈관/일반",
           "price": "500,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzExIyQxIyQ3IyQ5OSQyNjE0ODEjNTEjJDEjJDYjJDgz",
@@ -2778,7 +2812,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/복부-골반/일반",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQ1IyQ3OSQyNjEyMjIjODEjJDEjJDIjJDgz",
@@ -2787,7 +2823,7 @@
       "clCdNm": "병원",
       "careLevel": 2,
       "addr": "대전광역시 서구 둔산남로 87-0,  (둔산동)",
-      "telno": "042-719-1199",
+      "telno": "0507-1481-1223",
       "lat": 36.3493088,
       "lng": 127.3874339,
       "sgguCd": "250003",
@@ -2935,7 +2971,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/혈관-뇌혈관/일반",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQ1IyQ3MiQzNjEyMjIjNzEjJDEjJDgjJDgz",
@@ -2959,7 +2997,9 @@
       "evidenceId": "F1",
       "evidence": "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
       "sourceDate": "2026-09-04",
-      "mriNonpayItems": []
+      "mriNonpayItems": [],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQwMyQzNjEwMDIjNjEjJDEjJDAjJDgz",
@@ -2968,7 +3008,7 @@
       "clCdNm": "병원",
       "careLevel": 2,
       "addr": "대전광역시 서구 청사로 128, (월평동)",
-      "telno": "042-337-0001",
+      "telno": "0507-1368-0001",
       "lat": 36.3594533,
       "lng": 127.3778676,
       "sgguCd": "250003",
@@ -3124,7 +3164,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/복부-골반/일반",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQ3MiQzNjEwMDIjNTEjJDEjJDIjJDgz",
@@ -3233,7 +3275,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/근골격계-관절외 하지/조영제 주입 전·후 촬영 판독",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQxMyQ0NjEwMDIjNjEjJDEjJDAjJDgz",
@@ -3346,7 +3390,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/근골격계-천장골관절/조영제 주입 전·후 촬영 판독",
           "price": "400,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzExIyQxIyQ3IyQwMyQ0NjEwMDIjNDEjJDEjJDgjJDgz",
@@ -3387,7 +3433,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/혈관-뇌혈관/일반",
           "price": "350,000원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQ1IyQ2MiQzNjEwMDIjNDEjJDEjJDgjJDgz",
@@ -3548,7 +3596,9 @@
           "name": "자기공명영상진단료(MRI-특수검사)/Dynamic [기본검사 포함]",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQwMyQ0NjEwMDIjNzEjJDEjJDgjJDgz",
@@ -3649,7 +3699,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/복부-골반/일반",
           "price": "450,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQ3OSQzNjE0ODEjODEjJDEjJDIjJDgz",
@@ -3726,7 +3778,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/근골격계-관절외 하지/일반",
           "price": "400,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMiMkMiMkMDAkMzgxOTYxIzIxIyQxIyQ5IyQxMyQ0NjEwMDIjNzEjJDEjJDgjJDgz",
@@ -3750,7 +3804,9 @@
       "evidenceId": "F1",
       "evidence": "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
       "sourceDate": "2026-09-04",
-      "mriNonpayItems": []
+      "mriNonpayItems": [],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMiMkMiMkMDAkMzgxNzAyIzMxIyQxIyQzIyQ5OSQzNjE4MzIjNzEjJDEjJDgjJDgz",
@@ -3774,7 +3830,9 @@
       "evidenceId": "F1",
       "evidence": "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
       "sourceDate": "2026-09-04",
-      "mriNonpayItems": []
+      "mriNonpayItems": [],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ2MiQyNjE4MzIjNDEjJDEjJDgjJDgz",
@@ -3967,7 +4025,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/심장/일반",
           "price": "600,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQ4MiQyNjE0ODEjODEjJDEjJDYjJDgz",
@@ -4120,7 +4180,9 @@
           "name": "자기공명영상진단료(MRI-특수검사)/확산",
           "price": "200,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQ1IyQ3MiQyNjE0ODEjODEjJDEjJDIjJDgz",
@@ -4129,7 +4191,7 @@
       "clCdNm": "병원",
       "careLevel": 2,
       "addr": "대전광역시 동구 동서대로 1719, 바로본병원 (용전동)",
-      "telno": "042-341-8275",
+      "telno": "050-71411-8349",
       "lat": 36.3507767,
       "lng": 127.4403738,
       "sgguCd": "250004",
@@ -4144,7 +4206,9 @@
       "evidenceId": "F1",
       "evidence": "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
       "sourceDate": "2026-09-04",
-      "mriNonpayItems": []
+      "mriNonpayItems": [],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMiMkMiMkMDAkMzgxMTkxIzIxIyQxIyQ5IyQ5OSQzNjE0ODEjNDEjJDEjJDgjJDgz",
@@ -4168,7 +4232,9 @@
       "evidenceId": "F1",
       "evidence": "MRI 장비와 정형외과 진료가 확인되어 검사 가능성이 높습니다.",
       "sourceDate": "2026-09-04",
-      "mriNonpayItems": []
+      "mriNonpayItems": [],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ3OSQyNjEwMDIjNjEjJDEjJDgjJDgz",
@@ -4177,7 +4243,7 @@
       "clCdNm": "상급종합",
       "careLevel": 1,
       "addr": "대전광역시 중구 문화로 282- , (대사동)",
-      "telno": "042-1599-7123",
+      "telno": "1599-7123",
       "lat": 36.316908,
       "lng": 127.415363,
       "sgguCd": "250005",
@@ -4445,7 +4511,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/심장/일반",
           "price": "727,300원"
         }
-      ]
+      ],
+      "confirmedAt": null,
+      "reservationStatus": null
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ3OSQ0NjEwMDIjNDEjJDEjJDgjJDgz",
@@ -4816,7 +4884,7 @@
       "clCdNm": "병원",
       "careLevel": 2,
       "addr": "대전광역시 중구 대종로 608-0,  (선화동)",
-      "telno": null,
+      "telno": "0507-1489-2877",
       "lat": 36.3359365,
       "lng": 127.4173683,
       "sgguCd": "250005",
@@ -4892,7 +4960,9 @@
           "name": "자기공명영상진단료(MRI-기본검사)/근골격계-견관절/조영제 주입 전·후 촬영 판독",
           "price": "400,000원"
         }
-      ]
+      ],
+      "confirmedAt": "2026-09-15T00:00:00.000Z",
+      "reservationStatus": "available"
     },
     {
       "ykiho": "JDQ4MTYyMiM2MSMkMiMkMiMkMDAkNDgxOTYxIzMxIyQxIyQzIyQxMyQyNjEwMDIjNDEjJDEjJDQjJDgz",

@@ -43,5 +43,5 @@ export function canUseTel(): boolean {
 }
 
 export function canDial(raw: string | null | undefined): boolean {
-  return Boolean(formatPhone(raw)) && canUseTel();
+  return hasPhoneNumber(raw) && canUseTel();
 }

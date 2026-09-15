@@ -1,8 +1,10 @@
 "use client";
 
+import { useLockAppScroll } from "@/hooks/useLockAppScroll";
 import { CALL_GUIDES } from "@/lib/constants";
 import { canDial, telHref } from "@/lib/phone";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { PhoneIcon } from "./Icons";
 import { Toast } from "./Toast";
 
@@ -23,7 +25,13 @@ export function CallModal({
 }) {
   const telOk = canDial(phone);
   const [copied, setCopied] = useState(false);
+  const [target, setTarget] = useState<HTMLElement | null>(null);
   const firstQuestion = partLabel ? `${partLabel} MRI 검사 받을 수 있나요?` : CALL_GUIDES[0];
+  useLockAppScroll({ lockTouch: true });
+
+  useEffect(() => {
+    setTarget(document.body);
+  }, []);
 
   async function copy() {
     await onCopy();
@@ -31,9 +39,11 @@ export function CallModal({
     window.setTimeout(() => setCopied(false), 2000);
   }
 
-  return (
+  if (!target) return null;
+
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose} role="presentation">
-      <div className="sheet" onClick={(event) => event.stopPropagation()} role="dialog" aria-modal>
+      <div className="sheet call-sheet" onClick={(event) => event.stopPropagation()} role="dialog" aria-modal>
         <p className="sheet-name">{name}</p>
         <p className="sheet-phone num">{phone}</p>
         <div className="guide">
@@ -72,6 +82,7 @@ export function CallModal({
         )}
       </div>
       {copied ? <Toast>번호를 복사했어요</Toast> : null}
-    </div>
+    </div>,
+    target
   );
 }

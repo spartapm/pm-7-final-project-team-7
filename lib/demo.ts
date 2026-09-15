@@ -8,8 +8,6 @@ export const DEMO_ERROR_PART: PartId = "shoulder";
 export const DEMO_QA_REGION = "junggu";
 export const DEMO_LOADING_MS = 2200;
 
-export const YKIHO_CHEONGCHUN =
-  "JDQ4MTYyMiM2MSMkMSMkMiMkOTkkMzgxMzUxIzIxIyQxIyQxIyQwMyQ0NjE0ODEjODEjJDEjJDYjJDgz";
 export const YKIHO_SUN =
   "JDQ4MTYyMiM2MSMkMSMkMiMkODkkMzgxMzUxIzExIyQxIyQzIyQ3OSQ0NjEwMDIjNDEjJDEjJDgjJDgz";
 export const YKIHO_SEONGMO =
@@ -20,7 +18,6 @@ export const YKIHO_SEGYE =
 const UNKNOWN: Ternary = "unknown";
 
 const OVERRIDES: Record<string, Partial<Hospital>> = {
-  [YKIHO_CHEONGCHUN]: { telno: null },
   [YKIHO_SUN]: { hasOrtho: UNKNOWN, hasMriNonpay: UNKNOWN },
   [YKIHO_SEONGMO]: { hasOrtho: UNKNOWN, hasMriNonpay: UNKNOWN },
   [YKIHO_SEGYE]: { hasOrtho: UNKNOWN, hasMriNonpay: UNKNOWN },

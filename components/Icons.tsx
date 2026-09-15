@@ -54,6 +54,20 @@ export function ListInfoIcon() {
   return <FigmaIcon src="/figma/list-info.svg" size={16} />;
 }
 
+export function GuideChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+      <path
+        d={open ? "M4 10.2 8 6.2l4 4" : "M4 6.2 8 10.2l4-4"}
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function PhoneIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>

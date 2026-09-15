@@ -1,6 +1,7 @@
 "use client";
 
 import { ExamItemIcon, InfoIcon } from "@/components/Icons";
+import { useLockAppScroll } from "@/hooks/useLockAppScroll";
 import { NONPAY_SHEET_NOTE } from "@/lib/constants";
 import { displayItemLabel } from "@/lib/nonpay";
 import { useEffect, useState } from "react";
@@ -16,32 +17,10 @@ export function NonpaySheet({
   onClose: () => void;
 }) {
   const [target, setTarget] = useState<HTMLElement | null>(null);
+  useLockAppScroll();
 
   useEffect(() => {
     setTarget(document.body);
-    const shell = document.querySelector(".app-shell");
-    const html = document.documentElement;
-    const prevHtml = html.style.overflow;
-    const prevBody = document.body.style.overflow;
-    html.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-    let freeze: (() => void) | undefined;
-    if (shell instanceof HTMLElement) {
-      const saved = shell.scrollTop;
-      shell.classList.add("is-modal-locked");
-      freeze = () => {
-        if (shell.scrollTop !== saved) shell.scrollTop = saved;
-      };
-      shell.addEventListener("scroll", freeze);
-    }
-    return () => {
-      html.style.overflow = prevHtml;
-      document.body.style.overflow = prevBody;
-      if (shell instanceof HTMLElement) {
-        shell.classList.remove("is-modal-locked");
-        if (freeze) shell.removeEventListener("scroll", freeze);
-      }
-    };
   }, []);
 
   if (!target) return null;

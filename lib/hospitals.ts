@@ -1,6 +1,7 @@
 import snapshot from "@/data/hospitals.json";
 import { applyConfirmation } from "./status";
 import { applyDemoHospital } from "./demo";
+import { applyJudgmentHospital } from "./judgment";
 import { getSupabase } from "./supabase";
 import { REGIONS } from "./constants";
 import { haversineMeters } from "./distance";
@@ -72,18 +73,20 @@ function mapRow(row: HospitalRow): Hospital {
     reservationStatus: row.reservation_status,
     confirmedAt: row.confirmed_at,
   });
-  return applyDemoHospital(mapped);
+  return applyJudgmentHospital(applyDemoHospital(mapped));
 }
 
 function withLocalFields(hospital: Hospital): Hospital {
-  return applyDemoHospital(
-    applyConfirmation({
-      ...hospital,
-      mriScope: hospital.mriScope ?? null,
-      mriNonpayItems: hospital.mriNonpayItems ?? [],
-      reservationStatus: hospital.reservationStatus ?? null,
-      confirmedAt: hospital.confirmedAt ?? null,
-    })
+  return applyJudgmentHospital(
+    applyDemoHospital(
+      applyConfirmation({
+        ...hospital,
+        mriScope: hospital.mriScope ?? null,
+        mriNonpayItems: hospital.mriNonpayItems ?? [],
+        reservationStatus: hospital.reservationStatus ?? null,
+        confirmedAt: hospital.confirmedAt ?? null,
+      })
+    )
   );
 }
 
