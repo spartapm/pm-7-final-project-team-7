@@ -27,3 +27,18 @@ export function WarnIcon() {
     </svg>
   );
 }
+
+const EXAM_ITEM_ICONS = ["/figma/exam-item-1.svg", "/figma/exam-item-2.svg", "/figma/exam-item-3.svg"] as const;
+
+export function ExamHeadIcon() {
+  return <img src="/figma/exam-head.svg" alt="" width={16} height={16} aria-hidden />;
+}
+
+export function ExamItemIcon({ index }: { index: number }) {
+  const src = EXAM_ITEM_ICONS[index % EXAM_ITEM_ICONS.length];
+  return <img src={src} alt="" width={16} height={16} aria-hidden />;
+}
+
+export function InfoIcon() {
+  return <img src="/figma/portal-info.svg" alt="" width={16} height={16} aria-hidden />;
+}

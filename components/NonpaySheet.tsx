@@ -1,6 +1,8 @@
 "use client";
 
+import { ExamItemIcon, InfoIcon } from "@/components/Icons";
 import { NONPAY_SHEET_NOTE } from "@/lib/constants";
+import { displayItemLabel } from "@/lib/nonpay";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -53,29 +55,46 @@ export function NonpaySheet({
         aria-modal="true"
         aria-labelledby="nonpay-title"
       >
-        <button type="button" className="sheet-close" onClick={onClose} aria-label="닫기">
-          ✕
-        </button>
-        <h2 id="nonpay-title">{title}</h2>
-        <p className="sub" style={{ marginTop: 0 }}>
-          선택한 부위 기준으로 공개된 MRI 비급여 항목입니다.
-        </p>
+        <div className="nonpay-sheet-head">
+          <h2 id="nonpay-title">{title}</h2>
+          <button type="button" className="sheet-close" onClick={onClose} aria-label="닫기">
+            ✕
+          </button>
+        </div>
+        <p className="nonpay-sheet-sub">선택한 부위 기준으로 공개된 MRI 비급여 항목입니다.</p>
         <ul className="nonpay-list">
           {items.length ? (
-            items.map((item) => (
-              <li key={item.name}>
-                <span className="nonpay-name">{item.name}</span>
-                <span className="nonpay-price">{item.price ?? "확인 필요"}</span>
-              </li>
-            ))
+            items.map((item, index) => {
+              const label = displayItemLabel(item.name);
+              return (
+                <li key={item.name}>
+                  <span className="nonpay-ico">
+                    <ExamItemIcon index={index} />
+                  </span>
+                  <span className="nonpay-copy">
+                    <span className="nonpay-name">{label.title}</span>
+                    {label.subtitle ? <span className="nonpay-sub">{label.subtitle}</span> : null}
+                  </span>
+                  <span className="nonpay-price">{item.price ?? "확인 필요"}</span>
+                </li>
+              );
+            })
           ) : (
             <li>
-              <span className="nonpay-name">이 부위로 공개된 MRI 비급여 항목을 확인하지 못했어요.</span>
+              <span className="nonpay-ico">
+                <ExamItemIcon index={0} />
+              </span>
+              <span className="nonpay-copy">
+                <span className="nonpay-name">이 부위로 공개된 MRI 비급여 항목을 확인하지 못했어요.</span>
+              </span>
               <span className="nonpay-price">확인 필요</span>
             </li>
           )}
         </ul>
-        <p className="nonpay-sheet-note">{NONPAY_SHEET_NOTE}</p>
+        <div className="nonpay-sheet-note">
+          <InfoIcon />
+          <p>{NONPAY_SHEET_NOTE}</p>
+        </div>
       </div>
     </div>,
     target

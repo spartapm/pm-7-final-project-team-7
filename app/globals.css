@@ -894,10 +894,37 @@ a:focus-visible {
   min-height: 32px;
 }
 .nonpay-open span { color: var(--primary); font-size: 16px; font-weight: 400; }
+.nonpay-sheet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.nonpay-sheet-head h2 {
+  margin: 0;
+  flex: 1;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.nonpay-sheet-head .sheet-close {
+  float: none;
+  margin: -8px -8px 0 0;
+}
+.nonpay-sheet-sub {
+  margin: 6px 0 12px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--muted);
+}
 .nonpay-list {
   margin: 0;
   padding: 0;
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   max-height: min(48dvh, 360px);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -905,38 +932,47 @@ a:focus-visible {
 }
 .nonpay-list li {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line-2);
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(219, 234, 254, 0.6);
+  background: rgba(239, 246, 255, 0.4);
   font-size: 13px;
   font-weight: 500;
 }
-.nonpay-list li:last-child { border-bottom: 0; }
-.nonpay-name {
-  min-width: 0;
-  line-height: 1.45;
-}
 .nonpay-price {
   flex-shrink: 0;
-  color: var(--muted-2);
-  font-size: 12px;
-  font-weight: 500;
-  font-family: var(--mono);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  padding-top: 1px;
 }
 .nonpay-sheet-note {
   flex-shrink: 0;
-  margin-top: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
   background: var(--primary-soft);
+  border: 1px solid #dbeafe;
   border-radius: 12px;
   padding: 12px;
   font-size: 11px;
   font-weight: 400;
   line-height: 1.55;
   color: var(--muted-2);
+}
+.nonpay-sheet-note img {
+  flex-shrink: 0;
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+.nonpay-sheet-note p {
+  margin: 0;
+  word-break: keep-all;
 }
 .search-link {
   display: inline-block;
@@ -1001,18 +1037,35 @@ a:focus-visible {
   border: 0;
 }
 
+.exam-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
 .exam-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line-2);
 }
 .exam-head h2 {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   font-weight: 700;
   color: var(--ink);
+}
+.exam-head h2 img {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 .exam-live {
   display: inline-flex;
@@ -1032,47 +1085,99 @@ a:focus-visible {
 .exam-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
-  padding: 10px 12px;
-  margin-top: 8px;
+  padding: 10px;
   border-radius: 12px;
+  border: 1px solid rgba(219, 234, 254, 0.6);
   background: rgba(239, 246, 255, 0.4);
 }
-.exam-row p {
+.exam-ico,
+.nonpay-ico {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #dbeafe;
+}
+.exam-ico img,
+.nonpay-ico img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+.exam-copy,
+.nonpay-copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.exam-title,
+.nonpay-name {
   margin: 0;
   font-size: 13px;
   font-weight: 700;
+  line-height: 1.35;
   color: var(--ink);
+}
+.exam-sub,
+.nonpay-sub {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--muted);
 }
 .exam-badge {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   height: 25px;
-  padding: 0 8px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
   font-size: 11px;
   font-weight: 700;
 }
 .exam-badge.ok {
   background: var(--confirmed-bg);
+  border: 1px solid #a7f3d0;
   color: var(--confirmed);
 }
 .exam-badge.need {
   background: var(--unknown-bg);
+  border: 1px solid var(--line);
   color: var(--unknown);
 }
 
 .portal-note {
   margin-top: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   background: rgba(239, 246, 255, 0.7);
-  border-radius: 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
   padding: 14px;
   font-size: 12px;
   font-weight: 400;
   line-height: 1.6;
+  color: #475569;
+  word-break: keep-all;
+}
+.portal-note img {
+  flex-shrink: 0;
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+.portal-note strong {
   color: #1e293b;
+  font-weight: 700;
 }
 .list-guide {
   margin: 4px 0 8px;
@@ -1135,7 +1240,7 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
 }
-.sheet.nonpay-sheet::before { display: none; }
+.sheet.nonpay-sheet::before { display: block; }
 .nonpay-backdrop .nonpay-list {
   touch-action: pan-y;
   flex: 1;

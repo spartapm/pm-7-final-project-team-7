@@ -52,6 +52,18 @@ export function examItemsFromHospital(items: NonpayItem[], part: PartId | null) 
   return matched.map((item) => ({ name: item.name, available: true }));
 }
 
+/** HIRA names like `자기공명영상진단료(MRI-기본검사)/뇌/일반` → title + official subtitle. */
+export function displayItemLabel(raw: string): { title: string; subtitle?: string } {
+  const parts = raw
+    .split("/")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (parts.length >= 2) {
+    return { title: parts.slice(1).join(" · "), subtitle: parts[0] };
+  }
+  return { title: raw };
+}
+
 export function nonpayTitle(part: PartId | null) {
   return `${displayPartLabel(part)} MRI 비급여 항목`;
 }

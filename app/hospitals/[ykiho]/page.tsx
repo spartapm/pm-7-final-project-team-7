@@ -3,17 +3,24 @@
 import { BrandHeader } from "@/components/BrandHeader";
 import { CallModal } from "@/components/CallModal";
 import { ErrorState } from "@/components/ErrorState";
-import { NavIcon, PhoneIcon } from "@/components/Icons";
+import { ExamHeadIcon, ExamItemIcon, InfoIcon, NavIcon, PhoneIcon } from "@/components/Icons";
 import { LoadingState } from "@/components/LoadingState";
 import { NonpaySheet } from "@/components/NonpaySheet";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Toast } from "@/components/Toast";
 import { TypeGuideModal } from "@/components/TypeGuideModal";
 import { track } from "@/lib/analytics";
-import { MAPS_MISSING_TOAST, PORTAL_NOTICE, displayPartLabel, hospitalKindLabel, resolvePart } from "@/lib/constants";
+import {
+  MAPS_MISSING_TOAST,
+  PORTAL_NOTICE_BODY,
+  PORTAL_NOTICE_LEAD,
+  displayPartLabel,
+  hospitalKindLabel,
+  resolvePart,
+} from "@/lib/constants";
 import { hospitalById } from "@/lib/hospitals";
 import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
-import { examItemsFromHospital, itemsForPart, nonpayTitle } from "@/lib/nonpay";
+import { displayItemLabel, examItemsFromHospital, itemsForPart, nonpayTitle } from "@/lib/nonpay";
 import { canDial, displayPhone, hasPhoneNumber } from "@/lib/phone";
 import { analyticsStatus } from "@/lib/status";
 import type { NonpayItem } from "@/lib/types";
@@ -289,31 +296,53 @@ function DetailInner() {
 
         <section className="exam-card">
           <div className="exam-head">
-            <h2>검사 가능 정밀 항목 현황</h2>
+            <h2>
+              <ExamHeadIcon />
+              검사 가능 정밀 항목 현황
+            </h2>
             {hospital.status === "confirmed" ? <span className="exam-live">즉시 시행 가능</span> : null}
           </div>
           {examItems.length ? (
-            examItems.map((item) => (
-              <div className="exam-row" key={item.name}>
-                <p>{item.name}</p>
-                <span className={`exam-badge ${item.available ? "ok" : "need"}`}>
-                  {item.available ? "검사 가능" : "확인 필요"}
-                </span>
-              </div>
-            ))
+            examItems.map((item, index) => {
+              const label = displayItemLabel(item.name);
+              return (
+                <div className="exam-row" key={item.name}>
+                  <span className="exam-ico">
+                    <ExamItemIcon index={index} />
+                  </span>
+                  <div className="exam-copy">
+                    <p className="exam-title">{label.title}</p>
+                    {label.subtitle ? <p className="exam-sub">{label.subtitle}</p> : null}
+                  </div>
+                  <span className={`exam-badge ${item.available ? "ok" : "need"}`}>
+                    {item.available ? "검사 가능" : "확인 필요"}
+                  </span>
+                </div>
+              );
+            })
           ) : (
             <div className="exam-row">
-              <p>
-                {liveItems == null && !hospital.mriNonpayItems?.length
-                  ? "공개된 MRI 항목을 불러오는 중이에요."
-                  : `이 병원에서 공개된 ${partLabel} MRI 항목을 확인하지 못했어요.`}
-              </p>
+              <span className="exam-ico">
+                <ExamItemIcon index={0} />
+              </span>
+              <div className="exam-copy">
+                <p className="exam-title">
+                  {liveItems == null && !hospital.mriNonpayItems?.length
+                    ? "공개된 MRI 항목을 불러오는 중이에요."
+                    : `이 병원에서 공개된 ${partLabel} MRI 항목을 확인하지 못했어요.`}
+                </p>
+              </div>
               <span className="exam-badge need">{liveItems == null && !hospital.mriNonpayItems?.length ? "불러오는 중" : "확인 필요"}</span>
             </div>
           )}
         </section>
 
-        <p className="portal-note">{PORTAL_NOTICE}</p>
+        <p className="portal-note">
+          <InfoIcon />
+          <span>
+            <strong>{PORTAL_NOTICE_LEAD}</strong> {PORTAL_NOTICE_BODY}
+          </span>
+        </p>
       </div>
 
       <div className={`sticky-cta ${showCall ? "cta-pair" : "cta-pair single"}`}>
