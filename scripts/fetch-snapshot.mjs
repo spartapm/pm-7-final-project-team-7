@@ -1,13 +1,15 @@
 /**
  * HIRA snapshot builder for 이어(IEO).
- * Usage: HIRA_KEY_A=... HIRA_KEY_B=... node scripts/fetch-snapshot.mjs
+ * Usage: node scripts/fetch-snapshot.mjs
+ * Optional: HIRA_KEY_A=... HIRA_KEY_B=... to override the baked-in keys.
  */
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { HIRA_KEY_A, HIRA_KEY_B } from "../lib/hira-keys.js";
 
-const KEY_A = process.env.HIRA_KEY_A || process.env.HIRA_SERVICE_KEY;
-const KEY_B = process.env.HIRA_KEY_B || KEY_A;
+const KEY_A = process.env.HIRA_KEY_A || process.env.HIRA_SERVICE_KEY || HIRA_KEY_A;
+const KEY_B = process.env.HIRA_KEY_B || HIRA_KEY_B || KEY_A;
 if (!KEY_A) {
   console.error("HIRA_KEY_A is required");
   process.exit(1);

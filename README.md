@@ -14,15 +14,15 @@ npm run dev
 
 ## 환경 변수
 
-로컬은 `.env.local`, Vercel은 Project Settings → Environment Variables에 넣습니다.
+로컬은 `.env.local`, Vercel은 Project Settings → Environment Variables에 넣습니다. 심평원 키는 `lib/hira-keys.js`에 들어 있어서 Vercel에 따로 넣지 않아도 됩니다.
 
 | 변수 | 필수 | 용도 |
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | 앱 실행 | Supabase Project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 앱 실행 | Publishable key |
 | `DATABASE_URL` | 스키마 적용 때만 | `postgresql://postgres:[DB-PASSWORD]@db.xxxx.supabase.co:5432/postgres` |
-| `HIRA_KEY_A` | 스냅샷 갱신할 때만 | 병원정보·의료기관 상세 API 키 |
-| `HIRA_KEY_B` | 스냅샷 갱신할 때만 | 비급여·코드조회 API 키 |
+| `HIRA_KEY_A` | 선택 | 병원정보·의료기관 상세 API 키 덮어쓰기 |
+| `HIRA_KEY_B` | 선택 | 비급여·코드조회 API 키 덮어쓰기 |
 
 `NEXT_PUBLIC_` 값은 브라우저에 노출됩니다. Database password는 앱에 넣지 마세요.
 
@@ -37,7 +37,7 @@ npm run db:setup
 병원 목록을 심평원에서 다시 받으려면:
 
 ```bash
-HIRA_KEY_A='...' HIRA_KEY_B='...' npm run snapshot
+npm run snapshot
 ```
 
 스냅샷은 JSON을 갱신한 뒤 Supabase에도 upsert합니다.

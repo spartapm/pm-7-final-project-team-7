@@ -2,24 +2,14 @@
  * Fill MRI nonpay item names onto the existing snapshot.
  * Usage: node scripts/fetch-nonpay-items.mjs
  */
-import fs from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { HIRA_KEY_A, HIRA_KEY_B } from "../lib/hira-keys.js";
 import { loadEnv, root } from "./load-env.mjs";
 
 loadEnv();
 
-function keyFromDocs() {
-  try {
-    const md = fs.readFileSync(path.join(root, "docs/API_KEY.md"), "utf8");
-    const match = md.match(/비급여[\s\S]{0,500}?([A-Za-z0-9%+/=]{40,})/);
-    return match?.[1] || "";
-  } catch {
-    return "";
-  }
-}
-
-const KEY = process.env.HIRA_KEY_B || process.env.HIRA_KEY_A || keyFromDocs();
+const KEY = process.env.HIRA_KEY_B || process.env.HIRA_KEY_A || HIRA_KEY_B || HIRA_KEY_A;
 if (!KEY) {
   console.error("HIRA_KEY_B is required");
   process.exit(1);

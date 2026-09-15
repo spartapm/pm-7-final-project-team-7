@@ -1,3 +1,4 @@
+import { HIRA_KEY_A, HIRA_KEY_B } from "./hira-keys.js";
 import { isMriName, uniqueNonpayItems } from "./nonpay";
 import type { NonpayItem } from "./types";
 
@@ -11,18 +12,8 @@ function asList(items: unknown): Record<string, unknown>[] {
   return Array.isArray(raw) ? raw : [raw as Record<string, unknown>];
 }
 
-async function hiraKey() {
-  const fromEnv = process.env.HIRA_KEY_B || process.env.HIRA_KEY_A;
-  if (fromEnv) return fromEnv;
-  try {
-    const { readFile } = await import("node:fs/promises");
-    const { join } = await import("node:path");
-    const md = await readFile(join(process.cwd(), "docs/API_KEY.md"), "utf8");
-    const match = md.match(/비급여[\s\S]{0,500}?([A-Za-z0-9%+/=]{40,})/);
-    return match?.[1] || "";
-  } catch {
-    return "";
-  }
+function hiraKey() {
+  return process.env.HIRA_KEY_B || process.env.HIRA_KEY_A || HIRA_KEY_B || HIRA_KEY_A;
 }
 
 function formatAmount(value: unknown) {
@@ -38,7 +29,7 @@ export function parseNonpayRow(row: Record<string, unknown>): NonpayItem | null 
 }
 
 export async function fetchMriNonpayItems(ykiho: string): Promise<NonpayItem[]> {
-  const key = await hiraKey();
+  const key = hiraKey();
   if (!key || !ykiho) return [];
   const encoded = encodeURIComponent(ykiho);
   const items: NonpayItem[] = [];
