@@ -310,7 +310,6 @@ function DetailInner() {
               <ExamHeadIcon />
               검사 가능 정밀 항목 현황
             </h2>
-            {hospital.status === "confirmed" ? <span className="exam-live">즉시 시행 가능</span> : null}
           </div>
           {examItems.length ? (
             examItems.map((item, index) => {
