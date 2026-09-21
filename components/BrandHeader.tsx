@@ -26,6 +26,11 @@ export function BrandHeader({
       ) : (
         <div className="brand-row">
           <div className="brand-left">
+            {variant === "list" && onBack ? (
+              <button type="button" className="header-icon" onClick={onBack} aria-label="뒤로">
+                <BackIcon />
+              </button>
+            ) : null}
             <h1>이어</h1>
             <span className="ieo-badge">{variant === "list" ? "대전 MRI" : "IEO"}</span>
             {variant === "home" ? <span className="quiet-pill">MRI 안심 안내</span> : null}

@@ -1,9 +1,11 @@
 import { HIRA_KEY_A, HIRA_KEY_B } from "./hira-keys.js";
+import { hoursFromHira, type HospitalHours } from "./hours";
 import { isMriName, uniqueNonpayItems } from "./nonpay";
 import type { NonpayItem } from "./types";
 
 const NONPAY =
   "https://apis.data.go.kr/B551182/nonPaymentDamtInfoService/getNonPaymentItemHospDtlList";
+const DTL = "https://apis.data.go.kr/B551182/MadmDtlInfoService2.8/getDtlInfo2.8";
 
 function asList(items: unknown): Record<string, unknown>[] {
   if (!items || typeof items !== "object") return [];
@@ -14,6 +16,10 @@ function asList(items: unknown): Record<string, unknown>[] {
 
 function hiraKey() {
   return process.env.HIRA_KEY_B || process.env.HIRA_KEY_A || HIRA_KEY_B || HIRA_KEY_A;
+}
+
+function hiraDetailKey() {
+  return process.env.HIRA_KEY_A || HIRA_KEY_A;
 }
 
 function formatAmount(value: unknown) {
@@ -53,4 +59,15 @@ export async function fetchMriNonpayItems(ykiho: string): Promise<NonpayItem[]> 
     page += 1;
   }
   return uniqueNonpayItems(items);
+}
+
+export async function fetchHospitalHours(ykiho: string): Promise<HospitalHours> {
+  const key = hiraDetailKey();
+  if (!key || !ykiho) return { days: [], hasAny: false };
+  const url = `${DTL}?serviceKey=${key}&ykiho=${encodeURIComponent(ykiho)}&_type=json`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) return { days: [], hasAny: false };
+  const json = (await res.json()) as { response?: { body?: { items?: unknown } } };
+  const rows = asList(json.response?.body?.items);
+  return hoursFromHira(rows[0]);
 }

@@ -4,6 +4,7 @@ import { BrandHeader } from "@/components/BrandHeader";
 import { CallModal } from "@/components/CallModal";
 import { ErrorState } from "@/components/ErrorState";
 import { ExamHeadIcon, ExamItemIcon, InfoIcon, NavIcon, PhoneIcon } from "@/components/Icons";
+import { HoursCard } from "@/components/HoursCard";
 import { LoadingState } from "@/components/LoadingState";
 import { NonpaySheet } from "@/components/NonpaySheet";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -18,6 +19,7 @@ import {
   hospitalKindLabel,
   resolvePart,
 } from "@/lib/constants";
+import { splitHospitalAddr } from "@/lib/address";
 import { hospitalById } from "@/lib/hospitals";
 import { rememberListHospital } from "@/lib/list-memory";
 import { hospitalSearchUrl, mapEmbedUrl, mapsUrl } from "@/lib/maps";
@@ -162,6 +164,7 @@ function DetailInner() {
   };
   const addr = hospital.addr;
   const dong = neighborhoodFromAddr(addr);
+  const addrLines = addr ? splitHospitalAddr(addr) : null;
 
   async function copyAddress() {
     if (!addr) return;
@@ -238,6 +241,8 @@ function DetailInner() {
           </div>
         </dl>
 
+        <HoursCard ykiho={ykiho} />
+
         <dl className="rows">
           <div
             className="row tap"
@@ -264,9 +269,17 @@ function DetailInner() {
           <div className="row">
             <dt>주소</dt>
             <dd>
-              {hospital.addr ? (
+              {addrLines ? (
                 <>
-                  <span className="addr-text">{hospital.addr}</span>
+                  <span className="addr-text">
+                    {addrLines.line1}
+                    {addrLines.line2 ? (
+                      <>
+                        <br />
+                        {addrLines.line2}
+                      </>
+                    ) : null}
+                  </span>
                   <button type="button" className="copy-btn" onClick={() => void copyAddress()}>
                     복사
                   </button>
@@ -277,32 +290,6 @@ function DetailInner() {
             </dd>
           </div>
         </dl>
-
-        {hospital.addr || hasMap ? (
-          <div className="map-card">
-            <div className="map-head">
-              <div>
-                {dong ? <span className="dong-chip">{dong}</span> : null}
-                <p>{hospital.addr}</p>
-                <span>{hospital.name}</span>
-              </div>
-              {hospital.addr ? (
-                <button type="button" className="map-copy" onClick={() => void copyAddress()}>
-                  주소 복사
-                </button>
-              ) : null}
-            </div>
-            {hasMap ? (
-              <iframe
-                className="map-embed"
-                title={`${hospital.name} 위치`}
-                src={mapEmbedUrl(hospital.lat as number, hospital.lng as number)}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            ) : null}
-          </div>
-        ) : null}
 
         <section className="exam-card">
           <div className="exam-head">
@@ -352,6 +339,32 @@ function DetailInner() {
             <strong>{PORTAL_NOTICE_LEAD}</strong> {PORTAL_NOTICE_BODY}
           </span>
         </p>
+
+        {hospital.addr || hasMap ? (
+          <div className="map-card">
+            <div className="map-head">
+              <div>
+                {dong ? <span className="dong-chip">{dong}</span> : null}
+                <p>{hospital.addr}</p>
+                <span>{hospital.name}</span>
+              </div>
+              {hospital.addr ? (
+                <button type="button" className="map-copy" onClick={() => void copyAddress()}>
+                  주소 복사
+                </button>
+              ) : null}
+            </div>
+            {hasMap ? (
+              <iframe
+                className="map-embed"
+                title={`${hospital.name} 위치`}
+                src={mapEmbedUrl(hospital.lat as number, hospital.lng as number)}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <div className={`sticky-cta ${showCall ? "cta-pair" : "cta-pair single"}`}>

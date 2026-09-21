@@ -1,6 +1,7 @@
 "use client";
 
 import { BrandHeader } from "@/components/BrandHeader";
+import { CriteriaSheet } from "@/components/CriteriaSheet";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { HospitalCard } from "@/components/HospitalCard";
@@ -64,6 +65,7 @@ function ListInner() {
   const hospitals = useHospitals();
   const [sort, setSort] = useState<SortMode>(() => readSavedSort() ?? "distance");
   const [toast, setToast] = useState<string | null>(null);
+  const [criteriaOpen, setCriteriaOpen] = useState(false);
   const demoLoading = isDemoLoading(part, region);
   const demoError = isDemoError(part, region);
   const [demoHold, setDemoHold] = useState(demoLoading);
@@ -173,14 +175,19 @@ function ListInner() {
           <SlidersIcon />
         </button>
       </div>
-      <SortChips value={hasGeo ? sort : "type"} distanceEnabled={hasGeo} onChange={changeSort} />
+      <SortChips
+        value={hasGeo ? sort : "type"}
+        distanceEnabled={hasGeo}
+        onChange={changeSort}
+        onCriteria={() => setCriteriaOpen(true)}
+      />
     </div>
   );
 
   if (demoError) {
     return (
       <div className="page">
-        <BrandHeader variant="list" />
+        <BrandHeader variant="list" onBack={goHome} />
         <div className="page-body">
           <ErrorState
             onRetry={() => {
@@ -197,7 +204,7 @@ function ListInner() {
   if (phase === "error") {
     return (
       <div className="page">
-        <BrandHeader variant="list" />
+        <BrandHeader variant="list" onBack={goHome} />
         <div className="page-body">
           <ErrorState
             onRetry={() => {
@@ -214,7 +221,7 @@ function ListInner() {
   if (list.length === 0) {
     return (
       <div className="page">
-        <BrandHeader variant="list" />
+        <BrandHeader variant="list" onBack={goHome} />
         <div className="page-body">
           <EmptyState
             regionName={regionLabel(region ?? "all")}
@@ -234,7 +241,7 @@ function ListInner() {
 
   return (
     <div className="page">
-      <BrandHeader variant="list" />
+      <BrandHeader variant="list" onBack={goHome} />
       {filter}
       <div className="page-body">
         {geoFailed ? (
@@ -292,6 +299,7 @@ function ListInner() {
           </p>
         </div>
       </div>
+      {criteriaOpen ? <CriteriaSheet onClose={() => setCriteriaOpen(false)} /> : null}
       {toast ? <Toast>{toast}</Toast> : null}
     </div>
   );

@@ -11,7 +11,6 @@ import { Toast } from "./Toast";
 export function CallModal({
   name,
   phone,
-  partLabel,
   onClose,
   onCall,
   onCopy,
@@ -26,7 +25,7 @@ export function CallModal({
   const telOk = canDial(phone);
   const [copied, setCopied] = useState(false);
   const [target, setTarget] = useState<HTMLElement | null>(null);
-  const firstQuestion = partLabel ? `${partLabel} MRI 검사 받을 수 있나요?` : CALL_GUIDES[0];
+  const firstQuestion = CALL_GUIDES[0];
   useLockAppScroll({ lockTouch: true });
 
   useEffect(() => {
@@ -51,6 +50,8 @@ export function CallModal({
           {firstQuestion}
           <br />
           {CALL_GUIDES[1]}
+          <br />
+          {CALL_GUIDES[2]}
         </div>
         {telOk ? (
           <div className="modal-actions">

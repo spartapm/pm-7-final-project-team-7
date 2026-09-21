@@ -49,7 +49,7 @@ export function PartSelector({
                 aria-pressed={part === item.id}
                 onClick={() => onPartChange(item.id)}
               >
-                {item.label}
+                {item.buttonLabel ?? item.label}
               </button>
             ))}
           </div>

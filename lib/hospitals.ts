@@ -142,9 +142,9 @@ export function sortHospitals(
   const copy = [...list];
   const badgeRank = (h: Hospital) => (h.status === "high" || h.status === "confirmed" ? 0 : 1);
   const typeRank = (h: Hospital) => {
-    if (h.careLevel === 3) return 0;
+    if (h.careLevel === 1) return 0;
     if (h.careLevel === 2) return 1;
-    if (h.careLevel === 1) return 2;
+    if (h.careLevel === 3) return 2;
     return 3;
   };
   copy.sort((a, b) => {

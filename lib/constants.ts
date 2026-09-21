@@ -15,13 +15,17 @@ export const PORTAL_NOTICE = `${PORTAL_NOTICE_LEAD} ${PORTAL_NOTICE_BODY}`;
 export const NONPAY_SHEET_NOTE =
   "병원에 따라 비급여 항목 및 금액이 달라질 수 있어요. 정확한 검사 내용과 비용은 병원에 직접 문의해 주세요.";
 export const MRI_GUIDE_TITLE = "MRI 검사 이용 안내";
+export const MRI_GUIDE_PREP_LEAD =
+  "대표 준비물: 신분증, 기존 검사 결과(영상 CD), 복용 중인 약 및 관련 정보";
+export const MRI_GUIDE_PREP_FOOT =
+  "그 외 준비물은 병원마다 다를 수 있으므로 방문 전 해당 병원에 문의해주세요.";
 export const MRI_GUIDE_ITEMS = [
   {
-    title: "진료 소견서가 있는 경우",
-    body: "의원에서 발급받은 진료 소견서 또는 의뢰서를 지참하면, 병원에 따라 별도의 진료 없이 MRI 검사를 진행할 수 있습니다.",
+    title: "진료 의뢰서가 있는 경우",
+    body: "의원에서 발급받은 진료 의뢰서 또는 의뢰서를 지참하면, 병원에 따라 별도의 진료 없이 MRI 검사를 진행할 수 있습니다.",
   },
   {
-    title: "진료 소견서가 없는 경우",
+    title: "진료 의뢰서가 없는 경우",
     body: "해당 의료기관에서 먼저 진료를 받은 후, 의료진의 판단에 따라 MRI 검사를 진행할 수 있습니다.",
   },
 ] as const;
@@ -48,7 +52,7 @@ export const REGIONS: {
 export const PART_GROUPS: {
   id: PartGroupId;
   label: string;
-  parts: { id: PartId; label: string }[];
+  parts: { id: PartId; label: string; buttonLabel?: string }[];
 }[] = [
   {
     id: "brain",
@@ -63,8 +67,8 @@ export const PART_GROUPS: {
     id: "spine",
     label: "척추",
     parts: [
-      { id: "lumbar", label: "요추" },
-      { id: "cervical", label: "경추" },
+      { id: "lumbar", label: "요추", buttonLabel: "요추 (허리뼈)" },
+      { id: "cervical", label: "경추", buttonLabel: "경추 (목뼈)" },
     ],
   },
   {
@@ -150,7 +154,32 @@ export const TYPE_GUIDE = {
   note: "MRI 보유 여부는 병원 규모와 비례하지 않아요. 의원급 병원에도 MRI가 있을 수 있고, 큰 병원이라도 MRI가 없을 수 있어요.",
 };
 
-export const CALL_GUIDES = ["MRI 검사 받을 수 있나요?", "예약은 언제 가능한가요?"] as const;
+export const CALL_GUIDES = [
+  "MRI 검사 받을 수 있나요?",
+  "오늘 정형외과 진료 바로 가능한가요?",
+  "예약은 언제 가능한가요?",
+] as const;
+export const HOURS_SHEET_NOTE =
+  "병원 사정에 따라 진료시간이 변동될 수 있으니, 방문 전 전화로 한 번 더 확인해주세요.";
+export const JUDGMENT_SHEET_TITLE = "검사 판정 기준";
+export const JUDGMENT_SHEET_LEAD = "병원의 MRI 검사 가능 여부를 아래 기준으로 표시합니다.";
+export const JUDGMENT_SHEET_ITEMS = [
+  {
+    status: "confirmed" as const,
+    title: "검사 가능",
+    body: "해당 병원에서 당일 진료 후 바로 MRI 검사가 가능한 경우입니다.",
+  },
+  {
+    status: "high" as const,
+    title: "검사 가능성 높음",
+    body: "당일 예약은 어려우나 MRI 검사는 상시 가능한 경우입니다.",
+  },
+  {
+    status: "unknown" as const,
+    title: "확인 필요",
+    body: "현재 제공된 정보만으로는 당일 예약 및 추후 예약(MRI 검사 포함) 가능 여부를 판단하기 어려운 경우입니다.",
+  },
+];
 
 export const GPS_OPTIONS: PositionOptions = {
   enableHighAccuracy: false,

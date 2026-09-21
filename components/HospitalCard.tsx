@@ -31,16 +31,15 @@ export function HospitalCard({
         <div>
           <div className="card-kicker">
             <span className={`card-chip kind${kind === "상급종합" ? " is-tertiary" : ""}`}>{kind}</span>
-            {hospital.regionLabel ? <span className="card-chip region">{hospital.regionLabel}</span> : null}
             <StatusBadge status={hospital.status} />
           </div>
           <div className="card-title">{hospital.name}</div>
-          <div className="card-addr">{hospital.addr}</div>
         </div>
-        <div className="card-side">
-          {distanceLabel ? <div className="dist">{distanceLabel}</div> : null}
-          <span className="sggu">대전 {hospital.regionLabel}</span>
-        </div>
+        {distanceLabel ? (
+          <div className="card-side">
+            <div className="dist">{distanceLabel}</div>
+          </div>
+        ) : null}
       </div>
       <div className="mri-box">
         <strong>{mri}</strong>
