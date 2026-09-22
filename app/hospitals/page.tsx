@@ -299,8 +299,8 @@ function ListInner() {
             {LIST_GUIDE}
           </p>
         </div>
+        <ListWhisper />
       </div>
-      <ListWhisper />
       {criteriaOpen ? <CriteriaSheet onClose={() => setCriteriaOpen(false)} /> : null}
       {toast ? <Toast>{toast}</Toast> : null}
     </div>

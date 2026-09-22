@@ -333,13 +333,6 @@ function DetailInner() {
           )}
         </section>
 
-        <p className="portal-note">
-          <InfoIcon />
-          <span>
-            <strong>{PORTAL_NOTICE_LEAD}</strong> {PORTAL_NOTICE_BODY}
-          </span>
-        </p>
-
         {hospital.addr || hasMap ? (
           <div className="map-card">
             <div className="map-head">
@@ -365,6 +358,13 @@ function DetailInner() {
             ) : null}
           </div>
         ) : null}
+
+        <p className="portal-note">
+          <InfoIcon />
+          <span>
+            <strong>{PORTAL_NOTICE_LEAD}</strong> {PORTAL_NOTICE_BODY}
+          </span>
+        </p>
       </div>
 
       <div className={`sticky-cta ${showCall ? "cta-pair" : "cta-pair single"}`}>
