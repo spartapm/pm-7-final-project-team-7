@@ -244,7 +244,8 @@ function ListInner() {
     <div className="page">
       <BrandHeader variant="list" onBack={goHome} />
       {filter}
-      <div className="page-body">
+      <div className="page-body page-body-list">
+        <ListWhisper />
         {geoFailed ? (
           <LocationBanner
             onRetry={() => {
@@ -299,7 +300,6 @@ function ListInner() {
             {LIST_GUIDE}
           </p>
         </div>
-        <ListWhisper />
       </div>
       {criteriaOpen ? <CriteriaSheet onClose={() => setCriteriaOpen(false)} /> : null}
       {toast ? <Toast>{toast}</Toast> : null}

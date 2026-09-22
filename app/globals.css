@@ -1573,12 +1573,16 @@ a:focus-visible {
   white-space: nowrap;
 }
 
-.list-whisper {
+.page-body-list {
   position: relative;
-  z-index: 2;
+}
+.list-whisper {
+  position: sticky;
+  top: calc(100dvh - 110px);
+  z-index: 8;
   width: fit-content;
-  max-width: 100%;
-  margin: 12px auto 20px;
+  max-width: calc(100% - 8px);
+  margin: 0 auto -52px;
   padding: 10px 14px;
   border-radius: 14px;
   background: var(--primary-2);
