@@ -1573,6 +1573,64 @@ a:focus-visible {
   white-space: nowrap;
 }
 
+.list-whisper {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  z-index: 8;
+  width: fit-content;
+  max-width: min(398px, calc(100% - 32px));
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--primary-2);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: whisper-blink 4s steps(1, end) infinite;
+}
+.list-whisper::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--primary-2);
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 2px;
+}
+.list-whisper p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+@keyframes whisper-blink {
+  0%,
+  49.999% {
+    opacity: 1;
+    visibility: visible;
+  }
+  50%,
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .list-whisper {
+    animation: none;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 .empty, .error, .loading {
   flex: 1;
   display: flex;

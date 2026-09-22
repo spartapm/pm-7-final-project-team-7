@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { HospitalCard } from "@/components/HospitalCard";
 import { ListInfoIcon, PinIcon, SlidersIcon } from "@/components/Icons";
+import { ListWhisper } from "@/components/ListWhisper";
 import { LoadingState } from "@/components/LoadingState";
 import { LocationBanner } from "@/components/LocationBanner";
 import { SortChips } from "@/components/SortChips";
@@ -299,6 +300,7 @@ function ListInner() {
           </p>
         </div>
       </div>
+      <ListWhisper />
       {criteriaOpen ? <CriteriaSheet onClose={() => setCriteriaOpen(false)} /> : null}
       {toast ? <Toast>{toast}</Toast> : null}
     </div>
