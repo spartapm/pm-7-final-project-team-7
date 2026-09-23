@@ -27,7 +27,7 @@ import {
 } from "@/lib/constants";
 import { formatDistance, haversineMeters } from "@/lib/distance";
 import { hospitalsByRegion, regionLabel, sortHospitals } from "@/lib/hospitals";
-import { forgetListHospital, isListHospitalInView, readListHospital, scrollListHospitalIntoView } from "@/lib/list-memory";
+import { forgetListHospital, readListHospital, scrollListHospitalIntoView } from "@/lib/list-memory";
 import { isDemoError, isDemoLoading, DEMO_LOADING_MS } from "@/lib/demo";
 import { analyticsStatus } from "@/lib/status";
 import type { SortMode } from "@/lib/types";
@@ -124,30 +124,12 @@ function ListInner() {
     if (phase !== "ready" || list.length === 0 || demoHold) return;
     const focusedYkiho = readListHospital() ?? "";
     if (!focusedYkiho) return;
-    let cancelled = false;
-    let seenInView = 0;
-    const timers: number[] = [];
-
-    function run() {
-      if (cancelled) return;
+    forgetListHospital();
+    const frame = requestAnimationFrame(() => {
       scrollListHospitalIntoView(focusedYkiho);
-      if (isListHospitalInView(focusedYkiho)) {
-        seenInView += 1;
-        if (seenInView >= 2) forgetListHospital();
-        return;
-      }
-      seenInView = 0;
-    }
-
-    [0, 50, 120, 240, 400, 700, 1100, 1600].forEach((ms) => {
-      timers.push(window.setTimeout(run, ms));
     });
-
-    return () => {
-      cancelled = true;
-      timers.forEach((id) => window.clearTimeout(id));
-    };
-  }, [phase, list, demoHold, geo.status, sort]);
+    return () => cancelAnimationFrame(frame);
+  }, [phase, list, demoHold]);
 
   const qs = listQuery(part, region ?? "all", group);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarIcon, BackIcon, BellIcon } from "@/components/Icons";
+import { BackIcon } from "@/components/Icons";
 
 export function BrandHeader({
   variant,
@@ -19,9 +19,6 @@ export function BrandHeader({
             </button>
             <div className="topbar-title">병원 상세</div>
           </div>
-          <span className="avatar" aria-hidden>
-            <AvatarIcon />
-          </span>
         </div>
       ) : (
         <div className="brand-row">
@@ -34,14 +31,6 @@ export function BrandHeader({
             <h1>이어</h1>
             <span className="ieo-badge">{variant === "list" ? "대전 MRI" : "IEO"}</span>
             {variant === "home" ? <span className="quiet-pill">MRI 안심 안내</span> : null}
-          </div>
-          <div className="header-actions">
-            <span className="header-icon" role="img" aria-label="알림">
-              <BellIcon />
-            </span>
-            <span className="avatar" aria-hidden>
-              <AvatarIcon />
-            </span>
           </div>
         </div>
       )}

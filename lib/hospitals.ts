@@ -142,10 +142,16 @@ export function sortHospitals(
   const copy = [...list];
   const badgeRank = (h: Hospital) => (h.status === "high" || h.status === "confirmed" ? 0 : 1);
   const typeRank = (h: Hospital) => {
+    const code = String(h.clCd).padStart(2, "0");
+    const name = h.clCdNm ?? "";
+    if (code === "01" || name.includes("상급")) return 0;
+    if (code === "11" || name.includes("종합병원")) return 1;
+    if (code === "21" || (name.includes("병원") && !name.includes("종합") && !name.includes("상급"))) return 2;
+    if (code === "31" || code === "51" || code === "92" || name.includes("의원")) return 3;
     if (h.careLevel === 1) return 0;
-    if (h.careLevel === 2) return 1;
-    if (h.careLevel === 3) return 2;
-    return 3;
+    if (h.careLevel === 2) return 2;
+    if (h.careLevel === 3) return 3;
+    return 4;
   };
   copy.sort((a, b) => {
     if (mode === "distance" && origin) {

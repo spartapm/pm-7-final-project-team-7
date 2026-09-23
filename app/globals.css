@@ -1046,9 +1046,10 @@ a:focus-visible {
   align-items: flex-start;
 }
 .addr-text {
+  display: inline-block;
   font-size: 12px;
   font-weight: 500;
-  text-align: right;
+  text-align: left;
   max-width: 210px;
   line-height: 1.45;
 }
