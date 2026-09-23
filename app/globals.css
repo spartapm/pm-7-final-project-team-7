@@ -67,6 +67,7 @@ a:focus-visible {
   transform: translateZ(0);
   overflow-x: hidden;
   overflow-y: auto;
+  overflow-anchor: none;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -726,13 +727,13 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin: 0;
+  gap: 16px;
+  margin: 4px 0 0;
 }
 .sort-chips {
   display: flex;
-  gap: 6px;
-  min-width: 0;
+  gap: 8px;
+  flex-shrink: 0;
 }
 .criteria-open {
   border: 0;

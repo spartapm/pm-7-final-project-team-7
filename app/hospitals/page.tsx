@@ -27,7 +27,7 @@ import {
 } from "@/lib/constants";
 import { formatDistance, haversineMeters } from "@/lib/distance";
 import { hospitalsByRegion, regionLabel, sortHospitals } from "@/lib/hospitals";
-import { forgetListHospital, readListHospital, scrollListHospitalIntoView } from "@/lib/list-memory";
+import { forgetListHospital, readListHospital } from "@/lib/list-memory";
 import { isDemoError, isDemoLoading, DEMO_LOADING_MS } from "@/lib/demo";
 import { analyticsStatus } from "@/lib/status";
 import type { SortMode } from "@/lib/types";
@@ -122,13 +122,27 @@ function ListInner() {
 
   useEffect(() => {
     if (phase !== "ready" || list.length === 0 || demoHold) return;
-    const focusedYkiho = readListHospital() ?? "";
+    const focusedYkiho = readListHospital();
     if (!focusedYkiho) return;
+    const card = document.querySelector(`[data-ykiho="${CSS.escape(focusedYkiho)}"]`);
+    if (!(card instanceof HTMLElement)) return;
+    const shell = document.querySelector(".app-shell");
+    if (!(shell instanceof HTMLElement)) return;
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    let saved = Number.NaN;
+    try {
+      saved = Number(sessionStorage.getItem(LIST_SCROLL_KEY));
+    } catch {
+      saved = Number.NaN;
+    }
+    if (Number.isFinite(saved) && saved >= 0) {
+      const max = Math.max(0, shell.scrollHeight - shell.clientHeight);
+      shell.scrollTop = Math.min(max, saved);
+    } else {
+      const top = card.getBoundingClientRect().top - shell.getBoundingClientRect().top + shell.scrollTop;
+      shell.scrollTop = Math.max(0, top - 8);
+    }
     forgetListHospital();
-    const frame = requestAnimationFrame(() => {
-      scrollListHospitalIntoView(focusedYkiho);
-    });
-    return () => cancelAnimationFrame(frame);
   }, [phase, list, demoHold]);
 
   const qs = listQuery(part, region ?? "all", group);
