@@ -727,12 +727,12 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin: 4px 0 0;
+  gap: 8px;
+  margin: 0;
 }
 .sort-chips {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 .criteria-open {
@@ -1582,18 +1582,25 @@ a:focus-visible {
   position: sticky;
   top: calc(100dvh - 110px);
   z-index: 8;
+  height: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  animation: whisper-fade 4s ease-in-out infinite;
+}
+.list-whisper p {
   width: fit-content;
   max-width: calc(100% - 8px);
-  margin: 0 auto -52px;
+  height: fit-content;
+  flex-shrink: 0;
   padding: 10px 14px;
   border-radius: 14px;
   background: var(--primary-2);
   color: #fff;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
-  pointer-events: none;
-  animation: whisper-fade 4s ease-in-out infinite;
 }
-.list-whisper::after {
+.list-whisper p::after {
   content: "";
   position: absolute;
   left: 50%;
