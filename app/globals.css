@@ -1864,7 +1864,7 @@ a:focus-visible {
 }
 .criteria-card.is-high h3 { color: var(--high); }
 .criteria-card.is-unknown {
-  background: #f5f3ff;
-  border-color: #ddd6fe;
+  background: var(--unknown-bg);
+  border-color: #cbd5e1;
 }
-.criteria-card.is-unknown h3 { color: #6d28d9; }
+.criteria-card.is-unknown h3 { color: var(--unknown); }
